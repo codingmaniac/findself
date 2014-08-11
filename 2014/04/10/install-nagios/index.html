@@ -1,0 +1,390 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Nagios攻略 - 安装与配置 | Zinway&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Zinway">
+    
+    <meta name="description" content="简介： Nagios 全名为（Nagios Ain’t Goona Insist on Saintood），最初项目名字是 NetSaint。它是一款免费的开源 IT 基础设施监控系统，其功能强大，灵活性强，能有效监控 Windows 、Linux、VMware 和 Unix 主机状态，交换机、路由">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="Zinway&#39;s Blog" title="Zinway&#39;s Blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Zinway&#39;s Blog">Zinway&#39;s Blog</a></h1>
+				<h2 class="blog-motto">Talk about the Soy Sauce</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:zin.so">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/04/10/install-nagios/" title="Nagios攻略 - 安装与配置" itemprop="url">Nagios攻略 - 安装与配置</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://zin.so" title="Zinway">Zinway</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-04-10T06:56:17.000Z" itemprop="datePublished">Apr 10 2014</time>
+    Updated:<time datetime="2014-08-11T16:02:59.000Z" itemprop="dateModified">Aug 12 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Nagios_安装与配置"><span class="toc-number">1.</span> <span class="toc-text">Nagios 安装与配置</span></a></li></ol>
+		</div>
+		
+		<p><strong>简介：</strong> Nagios 全名为（Nagios Ain’t Goona Insist on Saintood），最初项目名字是 NetSaint。它是一款免费的开源 IT 基础设施监控系统，其功能强大，灵活性强，能有效监控 Windows 、Linux、VMware 和 Unix 主机状态，交换机、路由器等网络设置等。一旦主机或服务状态出现异常时，会发出邮件或短信报警第一时间通知 IT 运营人员，在状态恢复后发出正常的邮件或短信通知。Nagios 结构简单，可维护性强，越来越受中小企业青睐，以及运维和管理人员的使用。同时提供一个可选的基于浏览器的 Web 界面，方便管理人员查看系统的运行状态，网络状态、服务状态、日志信息，以及其他异常现象。</p>
+<hr>
+<p><strong>Nagios 监控实现原理</strong></p>
+<p>Nagios 软件需安装在一台独立的服务器上运行，这台服务器称为监控中心，监控中心服务器可以采用 Linux 或 Unix 操作系统；每一台被监视的硬件主机或服务都运行一个与监控中心服务器进行通信的 Nagios 软件后台程序，也可以理解为 Agent 或插件均可。监控中心服务器读取配置文件中的指令与远程的守护程序进行通信，并且指示远程的守护程序进行必要的检查。虽然 Nagios 软件必须在 Linux 或 Unix 操作系统上运行，但是远程被监控的机器可以是任何能够与其进行通信的主机，根据远程主机返回的应答，Naigos 将依据配置进行回应；接着 Nagios 将通过本地的机器进行测试，如果检测返回值不正确，Nagios 将通过一种或多种方式报警；具体原理如下图所示：<br><em>图 1. Nagios 监控原理图</em><br><img src="https://zinway.me/wp-content/uploads/2014/04/nagios001.jpg" alt="Nagios 原理图"></p>
+<hr>
+<h1 id="Nagios_安装与配置">Nagios 安装与配置</h1>
+<p>下载相关软件包（<a href="http://sourceforge.net/projects/nagios/files/" title="Nagios相关软件下载" target="_blank" rel="external">Nagios</a> &amp;&amp; <a href="http://www.centreon.com/Content-Download/donwload-centreon-monitoring-tools" title="Centreon相关软件下载" target="_blank" rel="external">Centreon</a>）</p>
+<p><strong><em>Nagios 安装：</em></strong></p>
+<p>创建nagios用户和组</p>
+<p><pre class="lang:default decode:true">➜  ~  groupadd -g 6000 nagios<br>➜  ~  groupadd -g 6001 nagcmd<br>➜  ~  useradd -u 6000 -g nagios -G nagcmd -d /home/nagios -c “Nagios Admin” nagios<br>➜  ~</pre><br>编译安装Nagios</p>
+<p><pre class="lang:default decode:true">➜  nagios  tar -zxvf nagios-4.0.4.tar.gz<br>➜  nagios  cd nagios-4.0.4<br>➜  nagios-4.0.4  ./configure —prefix=/usr/local/nagios —with-nagios-user=nagios —with-nagios-group=nagios —with-command-user=nagios —with-command-group=nagcmd —enable-event-broker —enable-nanosleep —enable-embedded-perl —with-perlcache<br>➜  nagios-4.0.4  make all<br>…<br><strong><em> Compile finished </em></strong></pre></p>
+<p>If the main program and CGIs compiled without any errors, you<br>can continue with installing Nagios as follows (type ‘make’<br>without any arguments for a list of all possible options):</p>
+<p>  make install</p>
+<pre><code> - This installs <span class="operator">the</span> main program, CGIs, <span class="operator">and</span> HTML <span class="built_in">files</span>
+</code></pre><p>  make install-init</p>
+<pre><code> - <span class="type">This</span> installs the <span class="keyword">init</span> script <span class="keyword">in</span> /etc/rc.d/<span class="keyword">init</span>.d
+</code></pre><p>  make install-commandmode</p>
+<pre><code> - This installs <span class="operator">and</span> configures permissions <span class="command"><span class="keyword">on</span> <span class="title">the</span></span>
+   <span class="built_in">directory</span> <span class="keyword">for</span> holding <span class="operator">the</span> external <span class="command"><span class="keyword">command</span> <span class="title">file</span></span>
+</code></pre><p>  make install-config</p>
+<pre><code> - This installs *SAMPLE* config files <span class="keyword">in</span> /usr/<span class="keyword">local</span>/nagios/etc
+   You'll have <span class="keyword">to</span> modify these sample files <span class="keyword">before</span> you can
+   use Nagios.  Read <span class="keyword">the</span> HTML documentation <span class="keyword">for</span> more info
+   <span class="function_start"><span class="keyword">on</span></span> doing this.  Pay particular attention <span class="keyword">to</span> <span class="keyword">the</span> docs <span class="function_start"><span class="keyword">on</span></span>
+   object configuration files, <span class="keyword">as</span> they determine what/how
+   things <span class="keyword">get</span> monitored!
+</code></pre><p>  make install-webconf</p>
+<pre><code> - <span class="keyword">This</span> installs the Apache config <span class="keyword">file</span> <span class="keyword">for</span> the Nagios
+   web <span class="keyword">interface</span>
+</code></pre><p>  make install-exfoliation</p>
+<pre><code> -<span class="ruby"> <span class="constant">This</span> installs the <span class="constant">Exfoliation</span> theme <span class="keyword">for</span> the <span class="constant">Nagios</span>
+</span>   web interface
+</code></pre><p>  make install-classicui</p>
+<pre><code> -<span class="ruby"> <span class="constant">This</span> installs the classic theme <span class="keyword">for</span> the <span class="constant">Nagios</span>
+</span>   web interface
+</code></pre><p>…<br>➜  nagios-4.0.4<br>编译安装Nagios插件</p>
+<p><pre class="lang:default decode:true">➜  nagios  tar -zxvf nagios-plugins-2.0.tar.gz<br>➜  nagios  cd nagios-plugins-2.0<br>➜  nagios-plugins-2.0  ./configure —prefix=/usr/local/nagios —with-nagios-user=nagios —with-nagios-group=nagios [—with-ipv6=no]<br>➜  nagios-plugins-2.0  make -j4<br>➜  nagios-plugins-2.0  make install</pre><br>编译安装ndoutils</p>
+<p><pre class="lang:default decode:true">➜  nagios  tar zxvf ndoutils-2.0.0.tar.gz<br>➜  nagios  cd ndoutils-2.0.0<br>➜  ndoutils-2.0.0  ./configure —prefix=/usr/local/nagios —enable-mysql —with-ndo2db-user=nagios —with-ndo2db-group=nagios<br>➜  ndoutils-2.0.0  make -j4<br>➜  ndoutils-2.0.0  make install<br>➜  ndoutils-2.0.0  cp ./config/ndo2db.cfg-sample /usr/local/nagios/etc/ndo2db.cfg<br>➜  ndoutils-2.0.0  cp ./config/ndomod.cfg-sample /usr/local/nagios/etc/ndomod.cfg<br>➜  ndoutils-2.0.0  chmod 774 /usr/local/nagios/bin/ndo<em><br>➜  ndoutils-2.0.0  chown nagios:nagios /usr/local/nagios/etc/ndo</em><br>➜  ndoutils-2.0.0  cp ./daemon-init /etc/init.d/ndo2db<br>➜  ndoutils-2.0.0  chmod +x /etc/init.d/ndo2db<br>➜  ndoutils-2.0.0  chkconfig —add ndo2db<br>➜  ndoutils-2.0.0  service ndo2db start<br>Starting ndo2db: done.<br>➜  ndoutils-2.0.0</pre><br>编译安装Centreon</p>
+<p><pre class="lang:default decode:true">➜  nagios  tar zxvf centreon-2.5.0.tar.gz<br>➜  nagios  cd centreon-2.5.0<br>➜  centreon-2.5.0  ./install.sh -i</pre><br><em><strong>Nagios 配置：</strong></em></p>
+<p>启动Nagios服务</p>
+<p><pre class="lang:default decode:true">➜  ~  chkconfig —add nagios<br>➜  ~  service nagios start<br>Starting nagios: done.<br>➜  ~</pre><br>&nbsp;</p>
+<p>&nbsp;</p>
+<p>（未完待续）</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Nagios/">Nagios</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Tools/">Tools</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://zin.so/2014/04/10/install-nagios/" data-title="Nagios攻略 - 安装与配置 | Zinway&#39;s Blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/04/16/diff-mod-rem/" title="取模运算和求余运算的区别">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  取模运算和求余运算的区别</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/04/09/using-mysql-socket-in-wordpress/"  title="WordPress通过unix socket连接MySQL">
+ <strong>NEXT:</strong><br/> 
+ <span>WordPress通过unix socket连接MySQL
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Nagios_安装与配置"><span class="toc-number">1.</span> <span class="toc-text">Nagios 安装与配置</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/Code/" title="Code">Code<sup>1</sup></a></li>
+		
+			<li><a href="/categories/JavaScript/" title="JavaScript">JavaScript<sup>1</sup></a></li>
+		
+			<li><a href="/categories/LNMP-Stack/" title="LNMP Stack">LNMP Stack<sup>3</sup></a></li>
+		
+			<li><a href="/categories/Shell/" title="Shell">Shell<sup>1</sup></a></li>
+		
+			<li><a href="/categories/Soy-sauce/" title="Soy sauce">Soy sauce<sup>0</sup></a></li>
+		
+			<li><a href="/categories/Tools/" title="Tools">Tools<sup>1</sup></a></li>
+		
+			<li><a href="/categories/Uncategorized/" title="Uncategorized">Uncategorized<sup>0</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/HHVM/" title="HHVM">HHVM<sup>1</sup></a></li>
+		
+			<li><a href="/tags/MySQL/" title="MySQL">MySQL<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Nagios/" title="Nagios">Nagios<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Python/" title="Python">Python<sup>1</sup></a></li>
+		
+			<li><a href="/tags/alias/" title="alias">alias<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>1</sup></a></li>
+		
+			<li><a href="/tags/git/" title="git">git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/js/" title="js">js<sup>1</sup></a></li>
+		
+			<li><a href="/tags/refresh/" title="refresh">refresh<sup>1</sup></a></li>
+		
+			<li><a href="/tags/rewrite/" title="rewrite">rewrite<sup>1</sup></a></li>
+		
+			<li><a href="/tags/运算/" title="运算">运算<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		
+		<a href="http://zin.so" target="_blank" title="Zinway">Zinway</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+  </body>
+</html>

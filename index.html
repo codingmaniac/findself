@@ -66,15 +66,106 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/2014/08/11/hello-world/" title="Hello World" itemprop="url">
+    <a href="/2014/04/16/diff-mod-rem/" title="取模运算和求余运算的区别" itemprop="url">
   
-    <h1 itemprop="name">Hello World</h1>
+    <h1 itemprop="name">取模运算和求余运算的区别</h1>
     
      
-           <p itemprop="description" >Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the </p>
+           <p itemprop="description" >通常情况下取模运算(mod)和求余(rem)运算被混为一谈，因为在大多数的编程语言里，都用’%’符号表示取模或者求余运算。在这里要提醒大家要十分注意当前环境下’%’运算符的具体意义，因为在有负数存在的情况下，两者的结果是不一样的。
+&amp;nbsp;
+对于整型数a，b来说，取模运算或者</p>
         
     
-    <time datetime="2014-08-11T04:12:08.000Z" itemprop="datePublished">Aug 11 2014</time>
+    <time datetime="2014-04-16T04:46:59.000Z" itemprop="datePublished">Apr 16 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2014/04/10/install-nagios/" title="Nagios攻略 - 安装与配置" itemprop="url">
+  
+    <h1 itemprop="name">Nagios攻略 - 安装与配置</h1>
+    
+     
+           <p itemprop="description" >简介： Nagios 全名为（Nagios Ain’t Goona Insist on Saintood），最初项目名字是 NetSaint。它是一款免费的开源 IT 基础设施监控系统，其功能强大，灵活性强，能有效监控 Windows 、Linux、VMware 和 Unix 主</p>
+        
+    
+    <time datetime="2014-04-10T06:56:17.000Z" itemprop="datePublished">Apr 10 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2014/04/09/using-mysql-socket-in-wordpress/" title="WordPress通过unix socket连接MySQL" itemprop="url">
+  
+    <h1 itemprop="name">WordPress通过unix socket连接MySQL</h1>
+    
+     
+           <p itemprop="description" >今天在自己server上（/tmp目录下）测试一些东西，测完以后，ls了一下，发现好多临时文件，然后强迫症犯了，手一抖给rm -rf ./* 掉了。删掉以后本blog就报连不上数据库的错了，发现是把 /tmp/mysql.sock 给干掉了。但是在/tmp下面放这么孤零零的一个文</p>
+        
+    
+    <time datetime="2014-04-09T11:14:30.000Z" itemprop="datePublished">Apr 9 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2014/03/25/install-hhvm/" title="在CentOS6.5上安装HHVM3.0(解决依赖问题)" itemprop="url">
+  
+    <h1 itemprop="name">在CentOS6.5上安装HHVM3.0(解决依赖问题)</h1>
+    
+     
+           <p itemprop="description" >前几天（03月21日），Facebook 正式发布专门用于 HHVM 的编程语言 Hack，然后就突然想装个HHVM来跑我的blog玩一下，后面也确实开始折腾了。
+03月22日晚上就试水了下，按GitHub上或者是HHVM官网上的教程来的，提示依赖的几个编译环境的版本太低了。然后</p>
+        
+    
+    <time datetime="2014-03-25T15:20:30.000Z" itemprop="datePublished">Mar 25 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2014/03/25/drawing/" title="本blog上的Drawing特效" itemprop="url">
+  
+    <h1 itemprop="name">本blog上的Drawing特效</h1>
+    
+     
+           <p itemprop="description" >用本篇文章来发布研究drawing.js的一些log
+PS：其实这个js是以前从Sivan的blog（ http://lightcss.com/ ）上“偷”来的。
+源码GitHub地址：https://github.com/Zinway-Liu/drawing
+&amp;nbsp;</p>
+        
+    
+    <time datetime="2014-03-25T09:24:40.000Z" itemprop="datePublished">Mar 25 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2014/03/19/meta-refresh/" title="首页refresh重定向" itemprop="url">
+  
+    <h1 itemprop="name">首页refresh重定向</h1>
+    
+     
+           <p itemprop="description" >昨天评估了半天，想用前端的方式来实现类似nginx rewrite这样一个重定向的效果，主要是想80重定向到443。
+server        {                listen       80;                server_name zinway</p>
+        
+    
+    <time datetime="2014-03-19T06:20:32.000Z" itemprop="datePublished">Mar 19 2014</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2014/03/18/git-alias/" title="Git常用命令别名" itemprop="url">
+  
+    <h1 itemprop="name">Git常用命令别名</h1>
+    
+     
+           <p itemprop="description" ># Aliasesalias g=’git’alias gst=’git status’alias gd=’git diff’alias gdc=’git diff —cached’alias gl=’git pull’alias gup=’git pull —rebase’al</p>
+        
+    
+    <time datetime="2014-03-18T06:22:47.000Z" itemprop="datePublished">Mar 18 2014</time>
   </a>
 </section>
 
@@ -87,8 +178,58 @@
 <aside class="clearfix">
 
   
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/Code/" title="Code">Code<sup>1</sup></a></li>
+		
+			<li><a href="/categories/JavaScript/" title="JavaScript">JavaScript<sup>1</sup></a></li>
+		
+			<li><a href="/categories/LNMP-Stack/" title="LNMP Stack">LNMP Stack<sup>3</sup></a></li>
+		
+			<li><a href="/categories/Shell/" title="Shell">Shell<sup>1</sup></a></li>
+		
+			<li><a href="/categories/Soy-sauce/" title="Soy sauce">Soy sauce<sup>0</sup></a></li>
+		
+			<li><a href="/categories/Tools/" title="Tools">Tools<sup>1</sup></a></li>
+		
+			<li><a href="/categories/Uncategorized/" title="Uncategorized">Uncategorized<sup>0</sup></a></li>
+		
+		</ul>
+</div>
+
 
   
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/HHVM/" title="HHVM">HHVM<sup>1</sup></a></li>
+		
+			<li><a href="/tags/MySQL/" title="MySQL">MySQL<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Nagios/" title="Nagios">Nagios<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Python/" title="Python">Python<sup>1</sup></a></li>
+		
+			<li><a href="/tags/alias/" title="alias">alias<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>1</sup></a></li>
+		
+			<li><a href="/tags/git/" title="git">git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/js/" title="js">js<sup>1</sup></a></li>
+		
+			<li><a href="/tags/refresh/" title="refresh">refresh<sup>1</sup></a></li>
+		
+			<li><a href="/tags/rewrite/" title="rewrite">rewrite<sup>1</sup></a></li>
+		
+			<li><a href="/tags/运算/" title="运算">运算<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
 
   <div class="rsspart">
 	<a href="null" target="_blank" title="rss">RSS</a>

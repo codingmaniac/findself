@@ -1,0 +1,383 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>在CentOS6.5上安装HHVM3.0(解决依赖问题) | Zinway&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Zinway">
+    
+    <meta name="description" content="前几天（03月21日），Facebook 正式发布专门用于 HHVM 的编程语言 Hack，然后就突然想装个HHVM来跑我的blog玩一下，后面也确实开始折腾了。
+03月22日晚上就试水了下，按GitHub上或者是HHVM官网上的教程来的，提示依赖的几个编译环境的版本太低了。然后就去折腾找更新的rp">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="Zinway&#39;s Blog" title="Zinway&#39;s Blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Zinway&#39;s Blog">Zinway&#39;s Blog</a></h1>
+				<h2 class="blog-motto">Talk about the Soy Sauce</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:zin.so">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/03/25/install-hhvm/" title="在CentOS6.5上安装HHVM3.0(解决依赖问题)" itemprop="url">在CentOS6.5上安装HHVM3.0(解决依赖问题)</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://zin.so" title="Zinway">Zinway</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-03-25T15:20:30.000Z" itemprop="datePublished">Mar 25 2014</time>
+    Updated:<time datetime="2014-08-11T16:02:59.000Z" itemprop="dateModified">Aug 12 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+		</div>
+		
+		<p>前几天（03月21日），Facebook 正式发布专门用于 HHVM 的编程语言 Hack，然后就突然想装个HHVM来跑我的blog玩一下，后面也确实开始折腾了。</p>
+<p>03月22日晚上就试水了下，按GitHub上或者是HHVM官网上的教程来的，提示依赖的几个编译环境的版本太低了。然后就去折腾找更新的rpm啊（各种第三方repo，各种Google），发现了一个悲剧的现状：目前CentOS6下还木有现成的高版本的编译环境的rpm，然后那天晚上时间也不早了就放弃了。</p>
+<p>03月25日晚上，就又突然想起这个事，然后就又搞起来了。</p>
+<p>办法嘛只有1个：那就是用老的（低版本的）编译环境去编译一个新的（高版本的）编译环境。好像有点绕，就拿gcc举个例子，目前是用gcc 4.4.7编译了个gcc 4.8.2，这就是悲催的现实。</p>
+<p>低版本的环境：</p>
+<p><pre class="lang:default decode:true">[root@ ~]# type gcc<br>gcc is /usr/bin/gcc<br>[root@ ~]# gcc -v<br>使用内建 specs。<br>目标：x86_64-redhat-linux<br>配置为：../configure —prefix=/usr —mandir=/usr/share/man —infodir=/usr/share/info —with-bugurl=<a href="http://bugzilla.redhat.com/bugzilla" target="_blank" rel="external">http://bugzilla.redhat.com/bugzilla</a> —enable-bootstrap —enable-shared —enable-threads=posix —enable-checking=release —with-system-zlib —enable-__cxa_atexit —disable-libunwind-exceptions —enable-gnu-unique-object —enable-languages=c,c++,objc,obj-c++,java,fortran,ada —enable-java-awt=gtk —disable-dssi —with-java-home=/usr/lib/jvm/java-1.5.0-gcj-1.5.0.0/jre —enable-libgcj-multifile —enable-java-maintainer-mode —with-ecj-jar=/usr/share/java/eclipse-ecj.jar —disable-libjava-multilib —with-ppl —with-cloog —with-tune=generic —with-arch_32=i686 —build=x86_64-redhat-linux<br>线程模型：posix<br>gcc 版本 4.4.7 20120313 (Red Hat 4.4.7-4) (GCC)<br>[root@ ~]#</pre><br>编译完的高版本：</p>
+<p><pre class="lang:default decode:true">[root@ ~]# gcc -v<br>使用内建 specs。<br>COLLECT_GCC=gcc<br>COLLECT_LTO_WRAPPER=/usr/local/libexec/gcc/x86_64-unknown-linux-gnu/4.8.2/lto-wrapper<br>目标：x86_64-unknown-linux-gnu<br>配置为：./configure —enable-checking=release —enable-languages=c,c++ —disable-multilib<br>线程模型：posix<br>gcc 版本 4.8.2 (GCC)<br>[root@ ~]#</pre><br>上面只是把GCC 4.8.2编译安装了，后面还要替换下系统的链接库：/usr/lib64/libstdc++.so.6</p>
+<p>旧版和新版GLIBC支持的对比：</p>
+<p><pre class="lang:default decode:true">[root@ ~]# strings /usr/lib64/libstdc++.so.6.bak |grep GLIBC<br>GLIBCXX_3.4<br>GLIBCXX_3.4.1<br>GLIBCXX_3.4.2<br>GLIBCXX_3.4.3<br>GLIBCXX_3.4.4<br>GLIBCXX_3.4.5<br>GLIBCXX_3.4.6<br>GLIBCXX_3.4.7<br>GLIBCXX_3.4.8<br>GLIBCXX_3.4.9<br>GLIBCXX_3.4.10<br>GLIBCXX_3.4.11<br>GLIBCXX_3.4.12<br>GLIBCXX_3.4.13<br>GLIBC_2.2.5<br>GLIBC_2.3<br>GLIBC_2.4<br>GLIBC_2.3.2<br>GLIBCXX_FORCE_NEW<br>GLIBCXX_DEBUG_MESSAGE_LENGTH<br>[root@ ~]# strings /usr/lib64/libstdc++.so.6 |grep GLIBC<br>GLIBCXX_3.4<br>GLIBCXX_3.4.1<br>GLIBCXX_3.4.2<br>GLIBCXX_3.4.3<br>GLIBCXX_3.4.4<br>GLIBCXX_3.4.5<br>GLIBCXX_3.4.6<br>GLIBCXX_3.4.7<br>GLIBCXX_3.4.8<br>GLIBCXX_3.4.9<br>GLIBCXX_3.4.10<br>GLIBCXX_3.4.11<br>GLIBCXX_3.4.12<br>GLIBCXX_3.4.13<br>GLIBCXX_3.4.14<br>GLIBCXX_3.4.15<br>GLIBCXX_3.4.16<br>GLIBCXX_3.4.17<br>GLIBCXX_3.4.18<br>GLIBCXX_3.4.19<br>GLIBC_2.3<br>GLIBC_2.2.5<br>GLIBC_2.3.2<br>GLIBCXX_FORCE_NEW<br>GLIBCXX_DEBUG_MESSAGE_LENGTH<br>[root@ ~]#</pre><br>03月26日，下面类似编译cmake等依赖环境。</p>
+<p><pre class="lang:default decode:true">[root@ ~]# cmake —version<br>cmake version 2.6-patch 4<br>[root@ ~]#<br>==&gt;<br>[root@ ~]# cmake —version<br>cmake version 2.8.12.2<br>[root@ ~]#</pre><br>截止到03月26日21:44，终于把依赖的环境全编译好了。</p>
+<p><pre class="lang:default decode:true">[root@ hhvm]# cmake .<br>Using HPHP_HOME == /root/hhvm_tmp/hhvm<br>— CMAKE_PREFIX_PATH was missing, proceeding anyway<br>— Boost version: 1.55.0<br>— Found the following Boost libraries:<br>—   system<br>—   program_options<br>—   filesystem<br>—   regex<br>— Found LibMagicWand: /usr/lib64/libMagickWand.so<br>— MySQL Include dir: /usr/include/mysql  library dir: /usr/lib64/mysql<br>— MySQL client libraries: mysqlclient_r<br>— Found PCRE: /usr/lib64/libpcre.so<br>— Found libevent: /usr/lib64/libevent.so<br>— Looking for evhttp_bind_socket_with_fd<br>— Looking for evhttp_bind_socket_with_fd - not found<br>— Could NOT find LibUODBC (missing:  LIBODBC_LIBRARIES LIBODBC_INCLUDE_DIRS)<br>— Found LibJpeg: /usr/lib64/libjpeg.so<br>— Found LibPng: /usr/lib64/libpng.so<br>— Found PkgConfig: /usr/bin/pkg-config (found version “0.23”)<br>— Found Freetype: /usr/lib64/libfreetype.so<br>— Found CURL: /usr/lib64/libcurl.so (found version “7.37.0-DEV”)<br>— Looking for curl_multi_select<br>— Looking for curl_multi_select - not found<br>— Looking for curl_multi_wait<br>— Looking for curl_multi_wait - not found<br>— Found LibXml2: /usr/lib64/libxml2.so (found version “2.7.6”)<br>— Found LibXslt: /usr/lib64/libxslt.so (found version “1.1.26”)<br>— Found EXPAT: /usr/lib64/libexpat.so (found version “2.0.1”)<br>— Found ICU header files in /usr/include<br>— Found ICU libraries: /usr/lib64/libicuuc.so<br>— Performing Test JEMALLOC_VERSION_3<br>— Performing Test JEMALLOC_VERSION_3 - Success<br>— Found jemalloc: /usr/lib64/libjemalloc.so<br>— Found Intel TBB<br>— Found mcrypt: /usr/lib64/libmcrypt.so<br>— Found OpenSSL: /usr/lib64/libssl.so;/usr/lib64/libcrypto.so (found version “1.0.1e”)<br>— Found ZLIB: /usr/lib64/libz.so (found version “1.2.3”)<br>— Found BZip2: /usr/lib64/libbz2.so (found version “1.0.5”)<br>— Looking for BZ2_bzCompressInit in /usr/lib64/libbz2.so<br>— Looking for BZ2_bzCompressInit in /usr/lib64/libbz2.so - found<br>— Found ONIGURUMA: /usr/lib64/libonig.so<br>— Found ldap: /usr/lib64/libldap.so;/usr/lib64/liblber.so<br>— Found LIBPTHREAD: /usr/lib64/libpthread.so<br>— Found Readline: /usr/include<br>— Could NOT find Editline (missing:  EDITLINE_LIBRARIES EDITLINE_INCLUDE_DIRS)<br>— Found LibElf: /usr/lib64/libelf.so<br>— Performing Test ELF_GETSHDRSTRNDX<br>— Performing Test ELF_GETSHDRSTRNDX - Success<br>— Found LibDwarf: /usr/lib64/libdwarf.so<br>— Looking for dwarf_encode_leb128<br>— Looking for dwarf_encode_leb128 - found<br>Generating Release build<br>— Performing Test FOLLY_IFUNC<br>— Performing Test FOLLY_IFUNC - Failed<br>— Looking for clock_gettime<br>— Looking for clock_gettime - found<br>— Looking for arpa/inet.h<br>— Looking for arpa/inet.h - found<br>— Looking for netinet/in.h<br>— Looking for netinet/in.h - found<br>— Looking for stddef.h<br>— Looking for stddef.h - found<br>— Looking for stdint.h<br>— Looking for stdint.h - found<br>— Looking for string.h<br>— Looking for string.h - found<br>— Looking for sys/socket.h<br>— Looking for sys/socket.h - found<br>— Looking for sys/time.h<br>— Looking for sys/time.h - found<br>— Looking for unistd.h<br>— Looking for unistd.h - found<br>— Looking for sys/types.h<br>— Looking for sys/types.h - found<br>— Looking for stdint.h<br>— Looking for stdint.h - found<br>— Looking for stddef.h<br>— Looking for stddef.h - found<br>— Check size of size_t<br>— Check size of size_t - done<br>— Check size of ssize_t<br>— Check size of ssize_t - done<br>— Check size of uint32_t<br>— Check size of uint32_t - done<br>— Check size of uint8_t<br>— Check size of uint8_t - done<br>— Looking for AF_LOCAL<br>— Looking for AF_LOCAL - found<br>— Looking for PF_LOCAL<br>— Looking for PF_LOCAL - found<br>— Looking for memset<br>— Looking for memset - found<br>— Looking for socket<br>— Looking for socket - found<br>— Looking for strerror<br>— Looking for strerror - found<br>— Found libevent: /usr/lib64/libevent.so<br>— Looking for event_get_version_number<br>— Looking for event_get_version_number - not found<br>— Performing Test HAVE_LIBEVENT_145<br>— Performing Test HAVE_LIBEVENT_145 - Success<br>— Found libevent 1.4.5+<br>— Looking for include file stdlib.h<br>— Looking for include file stdlib.h - found<br>— Looking for include file assert.h<br>— Looking for include file assert.h - found<br>— Looking for strcasecmp<br>— Looking for strcasecmp - found<br>— Looking for strchr<br>— Looking for strchr - found<br>— Looking for include file sys/stat.h<br>— Looking for include file sys/stat.h - found<br>— Looking for include file stdlib.h<br>— Looking for include file stdlib.h - found<br>— Looking for include file string.h<br>— Looking for include file string.h - found<br>— Looking for include file memory.h<br>— Looking for include file memory.h - found<br>— Looking for include file strings.h<br>— Looking for include file strings.h - found<br>— Looking for include file inttypes.h<br>— Looking for include file inttypes.h - found<br>— Looking for include file unistd.h<br>— Looking for include file unistd.h - found<br>— Looking for include file dlfcn.h<br>— Looking for include file dlfcn.h - found<br>— Looking for fdatasync<br>— Looking for fdatasync - found<br>— Looking for usleep<br>— Looking for usleep - found<br>— Looking for fullfsync<br>— Looking for fullfsync - not found<br>— Looking for localtime_r<br>— Looking for localtime_r - found<br>— Looking for gmtime_r<br>— Looking for gmtime_r - found<br>— Looking for pthread_create in pthread<br>— Looking for pthread_create in pthread - found<br>— Check if the system is big endian<br>— Searching 16 bit integer<br>— Check size of unsigned short<br>— Check size of unsigned short - done<br>— Using unsigned short<br>— Check if the system is big endian - little endian<br>— Looking for include file locale.h<br>— Looking for include file locale.h - found<br>— Looking for include file limits.h<br>— Looking for include file limits.h - found<br>— Check size of int32_t<br>— Check size of int32_t - done<br>— Looking for strtoll<br>— Looking for strtoll - found<br>— Looking for atoll<br>— Looking for atoll - found<br>— Looking for strftime<br>— Looking for strftime - found<br>— Looking for setlocale<br>— Looking for setlocale - found<br>— Boost version: 1.55.0<br>— Found the following Boost libraries:<br>—   system<br>—   program_options<br>—   filesystem<br>—   regex<br>— Looking for _close<br>— Looking for _close - not found<br>— Looking for _dup<br>— Looking for _dup - not found<br>— Looking for _fdopen<br>— Looking for _fdopen - not found<br>— Looking for _fileno<br>— Looking for _fileno - not found<br>— Looking for _open<br>— Looking for _open - not found<br>— Looking for _snprintf<br>— Looking for _snprintf - not found<br>— Looking for _strdup<br>— Looking for _strdup - not found<br>— Looking for _stricmp<br>— Looking for _stricmp - not found<br>— Looking for fseeko<br>— Looking for fseeko - found<br>— Looking for ftello<br>— Looking for ftello - found<br>— Looking for open<br>— Looking for open - found<br>— Looking for mkstemp<br>— Looking for mkstemp - found<br>— Looking for snprintf<br>— Looking for snprintf - found<br>— Looking for strdup<br>— Looking for strdup - found<br>— Looking for MoveFileExA<br>— Looking for MoveFileExA - not found<br>— Looking for include file sys/types.h<br>— Looking for include file sys/types.h - found<br>— Looking for include file inttypes.h<br>— Looking for include file inttypes.h - found<br>— Looking for include file stdint.h<br>— Looking for include file stdint.h - found<br>— Check size of <strong>int8<br>— Check size of </strong>int8 - failed<br>— Check size of int8_t<br>— Check size of int8_t - done<br>— Check size of uint8_t<br>— Check size of uint8_t - done<br>— Check size of <strong>int16<br>— Check size of </strong>int16 - failed<br>— Check size of int16_t<br>— Check size of int16_t - done<br>— Check size of uint16_t<br>— Check size of uint16_t - done<br>— Check size of <strong>int32<br>— Check size of </strong>int32 - failed<br>— Check size of int32_t<br>— Check size of int32_t - done<br>— Check size of uint32_t<br>— Check size of uint32_t - done<br>— Check size of <strong>int64<br>— Check size of </strong>int64 - failed<br>— Check size of int64_t<br>— Check size of int64_t - done<br>— Check size of uint64_t<br>— Check size of uint64_t - done<br>— Check size of short<br>— Check size of short - done<br>— Check size of int<br>— Check size of int - done<br>— Check size of long<br>— Check size of long - done<br>— Check size of long long<br>— Check size of long long - done<br>— Check size of off_t<br>— Check size of off_t - done<br>— Check size of size_t<br>— Check size of size_t - done<br>— Check size of ssize_t<br>— Check size of ssize_t - done<br>— Boost version: 1.55.0<br>— Found the following Boost libraries:<br>—   thread<br>—   system<br>— Boost version: 1.55.0<br>— Found the following Boost libraries:<br>—   thread<br>—   system<br>— OCaml not found, will not build Hack typechecker<br>— Configuring done<br>— Generating done<br>— Build files have been written to: /root/hhvm_tmp/hhvm<br>[root@ hhvm]#</pre><br>下一步就是跑HHVM的make。</p>
+<p>03月27日21:30</p>
+<p>我去，HHVM的编译卡在imagick了：</p>
+<p><pre class="lang:default decode:true">[ 51%] Building CXX object hphp/runtime/CMakeFiles/hphp_runtime_static.dir/ext/imagick/ext_imagick.cpp.o<br>[ 51%] Building CXX object hphp/runtime/CMakeFiles/hphp_runtime_static.dir/ext/imagick/constants.cpp.o<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp: 在函数‘void HPHP::loadImagickConstants()’中:<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp:760:52: 错误：‘ModulusAddCompositeOp’在此作用域中尚未声明<br>   registerImagickConstants(s_COMPOSITE_MODULUSADD, ModulusAddCompositeOp);<br>                                                    ^<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp:762:28: 错误：‘ModulusSubtractCompositeOp’在此作用域中尚未声明<br>                            ModulusSubtractCompositeOp);<br>                            ^<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp:809:43: 错误：‘JincFilter’在此作用域中尚未声明<br>   registerImagickConstants(s_FILTER_JINC, JincFilter);<br>                                           ^<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp:810:47: 错误：‘SincFastFilter’在此作用域中尚未声明<br>   registerImagickConstants(s_FILTER_SINCFAST, SincFastFilter);<br>                                               ^<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp:811:47: 错误：‘RobidouxFilter’在此作用域中尚未声明<br>   registerImagickConstants(s_FILTER_ROBIDOUX, RobidouxFilter);<br>                                               ^<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp:812:51: 错误：‘LanczosSharpFilter’在此作用域中尚未声明<br>   registerImagickConstants(s_FILTER_LANCZOSSHARP, LanczosSharpFilter);<br>                                                   ^<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp:813:47: 错误：‘Lanczos2Filter’在此作用域中尚未声明<br>   registerImagickConstants(s_FILTER_LANCZOS2, Lanczos2Filter);<br>                                               ^<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp:814:52: 错误：‘Lanczos2SharpFilter’在此作用域中尚未声明<br>   registerImagickConstants(s_FILTER_LANCZOS2SHARP, Lanczos2SharpFilter);<br>                                                    ^<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp:864:48: 错误：‘ZipSCompression’在此作用域中尚未声明<br>   registerImagickConstants(s_COMPRESSION_ZIPS, ZipSCompression);<br>                                                ^<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp:865:47: 错误：‘PizCompression’在此作用域中尚未声明<br>   registerImagickConstants(s_COMPRESSION_PIZ, PizCompression);<br>                                               ^<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp:866:49: 错误：‘Pxr24Compression’在此作用域中尚未声明<br>   registerImagickConstants(s_COMPRESSION_PXR24, Pxr24Compression);<br>                                                 ^<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp:867:47: 错误：‘B44Compression’在此作用域中尚未声明<br>   registerImagickConstants(s_COMPRESSION_B44, B44Compression);<br>                                               ^<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp:868:48: 错误：‘B44ACompression’在此作用域中尚未声明<br>   registerImagickConstants(s_COMPRESSION_B44A, B44ACompression);<br>                                                ^<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp:869:48: 错误：‘LZMACompression’在此作用域中尚未声明<br>   registerImagickConstants(s_COMPRESSION_LZMA, LZMACompression);<br>                                                ^<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp:944:44: 错误：‘SyncChannels’在此作用域中尚未声明<br>   registerImagickConstants(s_CHANNEL_SYNC, SyncChannels);<br>                                            ^<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp:1006:45: 错误：‘MeanEvaluateOperator’在此作用域中尚未声明<br>   registerImagickConstants(s_EVALUATE_MEAN, MeanEvaluateOperator);<br>                                             ^<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp:1007:44: 错误：‘AbsEvaluateOperator’在此作用域中尚未声明<br>   registerImagickConstants(s_EVALUATE_ABS, AbsEvaluateOperator);<br>                                            ^<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp:1009:28: 错误：‘ExponentialEvaluateOperator’在此作用域中尚未声明<br>                            ExponentialEvaluateOperator);<br>                            ^<br>/root/hhvm/hphp/runtime/ext/imagick/constants.cpp:1010:47: 错误：‘MedianEvaluateOperator’在此作用域中尚未声明<br>   registerImagickConstants(s_EVALUATE_MEDIAN, MedianEvaluateOperator);<br>                                               ^<br>make[2]: <strong><em> [hphp/runtime/CMakeFiles/hphp_runtime_static.dir/ext/imagick/constants.cpp.o] 错误 1<br>make[1]: </em></strong> [hphp/runtime/CMakeFiles/hphp_runtime_static.dir/all] 错误 2<br>make: <em>*</em> [all] 错误 2<br>➜</pre><br>靠，果然是被yum默认装的ImageMagick-devel给坑了：</p>
+<p><pre class="lang:default decode:true">IMAGEMAGICK_BINARY_PATH:PATH=/usr/bin<br>IMAGEMAGICK_COMPOSITE_EXECUTABLE:FILEPATH=/usr/bin/composite<br>IMAGEMAGICK_CONVERT_EXECUTABLE:FILEPATH=/usr/bin/convert<br>IMAGEMAGICK_IMPORT_EXECUTABLE:FILEPATH=/usr/bin/import<br>IMAGEMAGICK_MOGRIFY_EXECUTABLE:FILEPATH=/usr/bin/mogrify<br>IMAGEMAGICK_MONTAGE_EXECUTABLE:FILEPATH=/usr/bin/montage<br>ImageMagick_EXECUTABLE_DIR:PATH=/usr/bin<br>ImageMagick_MagickCore_INCLUDE_DIR:PATH=/usr/include/ImageMagick<br>ImageMagick_MagickCore_LIBRARY:FILEPATH=/usr/lib64/libMagickCore.so<br>ImageMagick_MagickWand_INCLUDE_DIR:PATH=/usr/include/ImageMagick<br>ImageMagick_MagickWand_LIBRARY:FILEPATH=/usr/lib64/libMagickWand.so</pre><br>怒删之。</p>
+<p>03月29日凌晨01:08</p>
+<p>终于在CentOS 6.5上把HHVM3.0编译出来了，来回折腾了小7个晚上。</p>
+<p>（各种环境版本问题，还有”/usr/lib64”和”/usr/lib”的问题等等，坑死~）</p>
+<p><pre class="lang:default decode:true">[ 93%] Building CXX object hphp/runtime/ext<em>hhvm/CMakeFiles/ext<em>hhvm<em>static.dir/ext<em>hhvm_infotabs.cpp.o<br>Linking CXX static library libext_hhvm.a<br>[ 93%] Built target ext_hhvm_static<br>[ 97%] Built target hphp_util<br>[ 98%] Built target vixl<br>[ 98%] Built target hphp_zend<br>[ 98%] Generating systemlib.php<br>[ 98%] Built target systemlib<br>Scanning dependencies of target hhvm<br>[ 98%] Building CXX object hphp/hhvm/CMakeFiles/hhvm.dir/main.cpp.o<br>[ 99%] Building CXX object hphp/hhvm/CMakeFiles/hhvm.dir/process-init.cpp.o<br>[ 99%] Building CXX object hphp/hhvm/CMakeFiles/hhvm.dir/global-variables.cpp.o<br>Linking CXX executable hhvm<br>Embedding php in hhvm<br>[ 99%] Built target hhvm<br>Scanning dependencies of target test<br>[ 99%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/test_ext_memcached.cpp.o<br>[ 99%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/main.cpp.o<br>[ 99%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/test_util.cpp.o<br>[ 99%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/test_logger.cpp.o<br>[ 99%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/test_base.cpp.o<br>[ 99%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/test_parser.cpp.o<br>[ 99%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/test_server.cpp.o<br>[ 99%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/test_parser_stmt.cpp.o<br>[100%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/test.cpp.o<br>[100%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/test_code_error.cpp.o<br>[100%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/test_all.cpp.o<br>[100%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/test_ext_server.cpp.o<br>[100%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/test_cpp_base.cpp.o<br>[100%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/test_fastcgi.cpp.o<br>[100%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/test_ext_apc.cpp.o<br>[100%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/test_parser_expr.cpp.o<br>[100%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/test_ext_mysql.cpp.o<br>[100%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/test_fastcgi_protocol.cpp.o<br>[100%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/test_code_run.cpp.o<br>[100%] Building CXX object hphp/test/CMakeFiles/test.dir/ext/test_cpp_ext.cpp.o<br>[100%] Building CXX object hphp/test/CMakeFiles/test.dir/</em></em>/hhvm/process-init.cpp.o<br>[100%] Building CXX object hphp/test/CMakeFiles/test.dir/</em></em>/hhvm/global-variables.cpp.o<br>Linking CXX executable test<br>Embedding php in test<br>[100%] Built target test<br>➜  hhvm git:(HHVM-3.0) ✗</pre></p>
+<p><pre class="lang:default decode:true">➜  hhvm git:(HHVM-3.0) ✗ make install<br>[  2%] Built target folly<br>[  2%] Built target double-conversion<br>[  3%] Built target gen-class-map<br>[  3%] Built target gen-ext-hhvm<br>[  3%] Built target gen-infotabs<br>[  3%] Built target afdt<br>[  8%] Built target mbfl<br>[  8%] Built target sqlite3<br>[  9%] Built target timelib<br>[  9%] Built target lz4<br>[ 15%] Built target zip_shared<br>[ 21%] Built target zip_static<br>[ 23%] Built target hphp_thrift<br>[ 23%] Built target hphp_proxygen<br>[ 23%] Built target hphp_system<br>[ 23%] Built target hphp_parser<br>[ 30%] Built target hphp_analysis<br>[ 32%] Built target hphp_hhbbc<br>[ 33%] Built target neo<br>[ 68%] Built target hphp_runtime_static<br>[ 96%] Built target ext_hhvm_static<br>[100%] Built target hphp_util<br>[100%] Built target vixl<br>[100%] Built target hphp_zend<br>[100%] Generating systemlib.php<br>[100%] Built target systemlib<br>Linking CXX executable hhvm<br>Embedding php in hhvm<br>[100%] Built target hhvm<br>Install the project…<br>— Install configuration: “”<br>— Installing: /usr/lib/libzip.a<br>— Installing: /usr/lib/libzip.so<br>— Removed runtime path from “/usr/lib/libzip.so”<br>— Installing: /usr/include/zipconf.h<br>— Installing: /usr/include/zip.h<br>— Installing: /usr/bin/hhvm<br>— Installing: /usr/bin/hphpize<br>➜  hhvm git:(HHVM-3.0) ✗</pre><br>来，下面就是HHVM的测试了。</p>
+<p>首先看下—version和—help</p>
+<p><pre class="lang:zsh decode:true">➜  ~  hhvm —version<br>HipHop VM 3.0.1 (rel)<br>Compiler: tags/HHVM-3.0.1-0-g1da451b79f40686de6472d23cf90fdd09fa4dc23<br>Repo schema: 11f0d546efba889ced1f9b92d9c9249f494d0b84<br>➜  ~  hhvm —help<br>Usage:</pre></p>
+<p>   hhvm [-m &lt;mode&gt;] [&lt;options&gt;] [&lt;arg1&gt;] [&lt;arg2&gt;] …</p>
+<p>Options:<br>  —help                                display this message<br>  —version                             display version number<br>  —php                                 emulate the standard php command line<br>  —compiler-id                         display the git hash for the compiler<br>  —repo-schema                         display the repository schema id<br>  -m [ —mode ] arg (=run)              run | debug (d) | server (s) | daemon |<br>                                        replay | translate (t)<br>  -a [ —interactive ]                  Shortcut for —mode debug<br>  -c [ —config ] arg                   load specified config file<br>  -v [ —config-value ] arg             individual configuration string in a<br>                                        format of name=value, where name can be<br>                                        any valid configuration for a config<br>                                        file<br>  -p [ —port ] arg (=-1)               start an HTTP server at specified port<br>  —port-fd arg (=-1)                   use specified fd instead of creating a<br>                                        socket<br>  —ssl-port-fd arg (=-1)               use specified fd for SSL instead of<br>                                        creating a socket<br>  —admin-port arg (=-1)                start admin listener at specified port<br>  —debug-config arg                    load specified debugger config file<br>  -h [ —debug-host ] [=arg(=localhost)]<br>                                        connect to debugger server at specified<br>                                        address<br>  —debug-port arg (=-1)                connect to debugger server at specified<br>                                        port<br>  —debug-extension arg                 PHP file that extends y command<br>  —debug-cmd arg                       executes this debugger command and<br>                                        returns its output in stdout<br>  —debug-sandbox arg (=default)        initial sandbox to attach to when<br>                                        debugger is started<br>  -u [ —user ] arg                     run server under this user account<br>  -f [ —file ] arg                     executing specified file<br>  -l [ —lint ] arg                     lint specified file<br>  -w [ —show ] arg                     output specified file and do nothing<br>                                        else<br>  —temp-file                           file specified is temporary and removed<br>                                        after execution<br>  —count arg (=1)                      how many times to repeat execution<br>  —no-safe-access-check arg (=0)       whether to ignore safe file access<br>                                        check<br>  —arg arg                             arguments<br>  —extra-header arg                    extra-header to add to log lines<br>  —build-id arg                        unique identifier of compiled server<br>                                        code<br>  —instance-id arg                     unique identifier of server instance<br>  —xhprof-flags arg (=0)               Set XHProf flags</p>
+<p>➜  ~<br>1、CPU密集型测试</p>
+<p><pre class="lang:default decode:true">➜  hhvm_test  cat t1.php<br>&lt;?php<br>function fib($n)<br>{<br>    if ($n &lt;= 2)<br>        return 1;<br>    else<br>        return fib($n-1) + fib($n-2);<br>}</pre></p>
+<p>$n = 36;<br>printf(“fib(%d) = %d\n”, $n, fib($n, 2));<br>?&gt;<br>➜  hhvm_test  time php t1.php<br>fib(36) = 14930352<br>php t1.php  10.04s user 0.02s system 99% cpu 10.072 total<br>➜  hhvm_test  time hhvm t1.php<br>fib(36) = 14930352<br>hhvm t1.php  0.52s user 0.12s system 52% cpu 1.226 total<br>➜  hhvm_test<br>2、内存密集型测试</p>
+<p><pre class="lang:default decode:true">➜  hhvm_test  cat t2.php<br>&lt;?php<br>ini_set(‘memory_limit’,’1024M’);</pre></p>
+<p>$arr = array();<br>for($i = 0; $i &lt; 2000000 ; $i++) {<br>    $arr[$i] = $i;<br>}</p>
+<p>$arr2 = array();</p>
+<p>foreach($arr as $val){<br>    $arr2[] = $val . $val;<br>}<br>?&gt;<br>➜  hhvm_test  time php t2.php<br>php t2.php  2.29s user 1.13s system 99% cpu 3.427 total<br>➜  hhvm_test  time hhvm t2.php<br>hhvm t2.php  1.60s user 0.73s system 79% cpu 2.934 total<br>➜  hhvm_test<br>从上面2个测试可以看出，CPU的消耗明显减少。</p>
+<hr>
+<p>最后，这边安装HHVM的目的就是想要用HHVM来跑WordPress（nginx -&gt; fastcgi -&gt; hhvm），按照官方的教程（<a href="https://github.com/facebook/hhvm/wiki/fastcgi）来配置了FastCGI" target="_blank" rel="external">https://github.com/facebook/hhvm/wiki/fastcgi）来配置了FastCGI</a> ，但是因为本blog是跑在ssl/(https)上的，测试下来有证书问题。</p>
+<p>正在研究HHVM SSL证书问题。</p>
+<p>（未完待续）</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/HHVM/">HHVM</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/LNMP-Stack/">LNMP Stack</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://zin.so/2014/03/25/install-hhvm/" data-title="在CentOS6.5上安装HHVM3.0(解决依赖问题) | Zinway&#39;s Blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/04/09/using-mysql-socket-in-wordpress/" title="WordPress通过unix socket连接MySQL">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  WordPress通过unix socket连接MySQL</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/03/25/drawing/"  title="本blog上的Drawing特效">
+ <strong>NEXT:</strong><br/> 
+ <span>本blog上的Drawing特效
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/Code/" title="Code">Code<sup>1</sup></a></li>
+		
+			<li><a href="/categories/JavaScript/" title="JavaScript">JavaScript<sup>1</sup></a></li>
+		
+			<li><a href="/categories/LNMP-Stack/" title="LNMP Stack">LNMP Stack<sup>3</sup></a></li>
+		
+			<li><a href="/categories/Shell/" title="Shell">Shell<sup>1</sup></a></li>
+		
+			<li><a href="/categories/Soy-sauce/" title="Soy sauce">Soy sauce<sup>0</sup></a></li>
+		
+			<li><a href="/categories/Tools/" title="Tools">Tools<sup>1</sup></a></li>
+		
+			<li><a href="/categories/Uncategorized/" title="Uncategorized">Uncategorized<sup>0</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/HHVM/" title="HHVM">HHVM<sup>1</sup></a></li>
+		
+			<li><a href="/tags/MySQL/" title="MySQL">MySQL<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Nagios/" title="Nagios">Nagios<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Python/" title="Python">Python<sup>1</sup></a></li>
+		
+			<li><a href="/tags/alias/" title="alias">alias<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>1</sup></a></li>
+		
+			<li><a href="/tags/git/" title="git">git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/js/" title="js">js<sup>1</sup></a></li>
+		
+			<li><a href="/tags/refresh/" title="refresh">refresh<sup>1</sup></a></li>
+		
+			<li><a href="/tags/rewrite/" title="rewrite">rewrite<sup>1</sup></a></li>
+		
+			<li><a href="/tags/运算/" title="运算">运算<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		
+		<a href="http://zin.so" target="_blank" title="Zinway">Zinway</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,418 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>取模运算和求余运算的区别 | Zinway&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Zinway">
+    
+    <meta name="description" content="通常情况下取模运算(mod)和求余(rem)运算被混为一谈，因为在大多数的编程语言里，都用’%’符号表示取模或者求余运算。在这里要提醒大家要十分注意当前环境下’%’运算符的具体意义，因为在有负数存在的情况下，两者的结果是不一样的。
+&amp;nbsp;
+对于整型数a，b来说，取模运算或者求余运算的方法都是：">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="Zinway&#39;s Blog" title="Zinway&#39;s Blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Zinway&#39;s Blog">Zinway&#39;s Blog</a></h1>
+				<h2 class="blog-motto">Talk about the Soy Sauce</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:zin.so">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/04/16/diff-mod-rem/" title="取模运算和求余运算的区别" itemprop="url">取模运算和求余运算的区别</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://zin.so" title="Zinway">Zinway</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-04-16T04:46:59.000Z" itemprop="datePublished">Apr 16 2014</time>
+    Updated:<time datetime="2014-08-11T16:02:59.000Z" itemprop="dateModified">Aug 12 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+		</div>
+		
+		<p>通常情况下取模运算(mod)和求余(rem)运算被混为一谈，因为在大多数的编程语言里，都用’%’符号表示取模或者求余运算。在这里要提醒大家要十分注意当前环境下’%’运算符的具体意义，因为在有负数存在的情况下，两者的结果是不一样的。</p>
+<p>&nbsp;</p>
+<p>对于整型数a，b来说，取模运算或者求余运算的方法都是：</p>
+<p><span style="color: #0000ff;"><strong>1、求 整数商：c = a/b</strong></span></p>
+<p><span style="color: #0000ff;"><strong>2、计算模或者余数：r = a - c*b</strong></span></p>
+<p>&nbsp;</p>
+<p>求模运算和求余运算在第一步不同: <del></del><strong><span style="color: #ff0000;">求余运算在取c的值时，向0方向舍入（fix()函数）</span>；</strong></p>
+<p>而<del></del><strong><span style="color: #ff0000;">取模运算在计算c的值时，向无穷小方向舍入（floor()函数）</span>。</strong></p>
+<p>因此，当a和b符号一致时，求模运算和求余运算所得的c的值一致，因此结果一致。但是当符号不一致的时候，结果不一样。</p>
+<p>具体来说，求模运算结果的符号和b一致，求余运算结果的符号和a一致。</p>
+<p>&nbsp;</p>
+<p>在C语言中，%符号表示的是求余运算，在python脚本中，%表示的是取模。（通常取模运算中b不允许是负数，但是在python里面可以在%后面跟负数，因为python语言中除法的结果是向无穷小方向舍入，因此计算结果是取模！）</p>
+<p>下面表格是一些典型的取模或者求余的值。</p>
+<p><style type="text/css"><!--
+table.table_border { border-width: 1px 1px 1px 1px; border-spacing: 2px; border-style: outset outset outset outset; border-color: gray gray gray gray; border-collapse: separate; background-color: white; } table.table_border th { border-width: 1px 1px 1px 1px; padding: 1px 1px 1px 1px; border-style: inset inset inset inset; border-color: gray gray gray gray; background-color: white; -moz-border-radius: 0px 0px 0px 0px; } table.table_border td { border-width: 1px 1px 1px 1px; padding: 1px 1px 1px 1px; border-style: inset inset inset inset; border-color: gray gray gray gray; background-color: white; -moz-border-radius: 0px 0px 0px 0px; text-align: center; } --><br>—&gt;</style></p>
+<p><table class="table_border" width="533" border="1" cellspacing="1" cellpadding="1"></table></p>
+<p><tbody></tbody></p>
+<p><tr></tr></p>
+<p><td align="center"><strong>a
+</strong></td></p>
+<p><td align="center"><strong>b
+</strong></td></p>
+<p><td align="center"><strong>C语言：a%b（求余）
+</strong></td></p>
+<p><td align="center"><strong>Python Shell：a%b（取模）
+</strong></td><br></p>
+<p><tr></tr></p>
+<p><td align="center">-3</td></p>
+<p><td align="center">-5</td></p>
+<p><td align="center">-3</td></p>
+<p><td align="center">-3</td><br></p>
+<p><tr></tr></p>
+<p><td align="center">-3</td></p>
+<p><td align="center">4</td></p>
+<p><td align="center">-3 = -3 - (<span style="color: #ff0000;">0</span>)*4</td></p>
+<p><td align="center">1 = -3 - (<span style="color: #ff0000;">-1</span>)*4</td><br></p>
+<p><tr></tr></p>
+<p><td align="center" valign="top">-3</td></p>
+<p><td align="center" valign="top">2</td></p>
+<p><td align="center" valign="top">-1 = -3 - (<span style="color: #ff0000;">-1</span>)*2</td></p>
+<p><td align="center" valign="top">1 = -3 - (<span style="color: #ff0000;">-2</span>)*2</td><br></p>
+<p><tr></tr></p>
+<p><td align="center" valign="top">-1</td></p>
+<p><td align="center" valign="top">6</td></p>
+<p><td align="center" valign="top">-1 = -1 - (<span style="color: #ff0000;">0</span>)*6</td></p>
+<p><td align="center" valign="top">5 = -1 - (<span style="color: #ff0000;">-1</span>)*6</td><br></p>
+<p><tr></tr></p>
+<p><td align="center" valign="top">-4</td></p>
+<p><td align="center" valign="top">-3</td></p>
+<p><td align="center" valign="top">-1</td></p>
+<p><td align="center" valign="top">-1</td><br></p>
+<p><tr></tr></p>
+<p><td align="center" valign="top">2</td></p>
+<p><td align="center" valign="top">4</td></p>
+<p><td align="center" valign="top">2</td></p>
+<p><td align="center" valign="top">2</td><br></p>
+<p><tr></tr></p>
+<p><td align="center" valign="top">5</td></p>
+<p><td align="center" valign="top">3</td></p>
+<p><td align="center" valign="top">2</td></p>
+<p><td align="center" valign="top">2</td><br></p>
+<p><tr></tr></p>
+<p><td align="center" valign="top">4</td></p>
+<p><td align="center" valign="top">-7</td></p>
+<p><td align="center" valign="top">4 = 4 - (<span style="color: #ff0000;">0</span>)*(-7)</td></p>
+<p><td align="center" valign="top">-3 = 4 - (<span style="color: #ff0000;">-1</span>)*(-7)</td><br></p>
+<p><tr></tr></p>
+<p><td align="center" valign="top">4</td></p>
+<p><td align="center" valign="top">-3</td></p>
+<p><td align="center" valign="top">1 = 4 - (<span style="color: #ff0000;">-1</span>)*(-3)</td></p>
+<p><td align="center" valign="top">-2 = 4 - (<span style="color: #ff0000;">-2</span>)*(-3)</td><br></p>
+<p><tr></tr></p>
+<p><td align="center" valign="top">-6</td></p>
+<p><td align="center" valign="top">-5</td></p>
+<p><td align="center" valign="top">-1</td></p>
+<p><td align="center" valign="top">-1</td><br><br><br><br>&nbsp;</p>
+<p>&nbsp;</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/c/">c</a><a href="/tags/Python/">Python</a><a href="/tags/运算/">运算</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Code/">Code</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://zin.so/2014/04/16/diff-mod-rem/" data-title="取模运算和求余运算的区别 | Zinway&#39;s Blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2014/04/10/install-nagios/"  title="Nagios攻略 - 安装与配置">
+ <strong>NEXT:</strong><br/> 
+ <span>Nagios攻略 - 安装与配置
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/Code/" title="Code">Code<sup>1</sup></a></li>
+		
+			<li><a href="/categories/JavaScript/" title="JavaScript">JavaScript<sup>1</sup></a></li>
+		
+			<li><a href="/categories/LNMP-Stack/" title="LNMP Stack">LNMP Stack<sup>3</sup></a></li>
+		
+			<li><a href="/categories/Shell/" title="Shell">Shell<sup>1</sup></a></li>
+		
+			<li><a href="/categories/Soy-sauce/" title="Soy sauce">Soy sauce<sup>0</sup></a></li>
+		
+			<li><a href="/categories/Tools/" title="Tools">Tools<sup>1</sup></a></li>
+		
+			<li><a href="/categories/Uncategorized/" title="Uncategorized">Uncategorized<sup>0</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/HHVM/" title="HHVM">HHVM<sup>1</sup></a></li>
+		
+			<li><a href="/tags/MySQL/" title="MySQL">MySQL<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Nagios/" title="Nagios">Nagios<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Python/" title="Python">Python<sup>1</sup></a></li>
+		
+			<li><a href="/tags/alias/" title="alias">alias<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>1</sup></a></li>
+		
+			<li><a href="/tags/git/" title="git">git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/js/" title="js">js<sup>1</sup></a></li>
+		
+			<li><a href="/tags/refresh/" title="refresh">refresh<sup>1</sup></a></li>
+		
+			<li><a href="/tags/rewrite/" title="rewrite">rewrite<sup>1</sup></a></li>
+		
+			<li><a href="/tags/运算/" title="运算">运算<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		
+		<a href="http://zin.so" target="_blank" title="Zinway">Zinway</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+  </body>
+</html>
