@@ -10,8 +10,8 @@
     <meta name="author" content="Zinway">
     
     <meta name="description" content="通常情况下取模运算(mod)和求余(rem)运算被混为一谈，因为在大多数的编程语言里，都用’%’符号表示取模或者求余运算。在这里要提醒大家要十分注意当前环境下’%’运算符的具体意义，因为在有负数存在的情况下，两者的结果是不一样的。
-&amp;nbsp;
-对于整型数a，b来说，取模运算或者求余运算的方法都是：">
+对于整型数a，b来说，取模运算或者求余运算的方法都是：
+1、求 整数">
     
     
     
@@ -81,7 +81,7 @@
     </p>
   <p class="article-time">
     <time datetime="2014-04-16T04:46:59.000Z" itemprop="datePublished">Apr 16 2014</time>
-    Updated:<time datetime="2014-08-11T16:02:59.000Z" itemprop="dateModified">Aug 12 2014</time>
+    Updated:<time datetime="2014-08-12T14:16:51.000Z" itemprop="dateModified">Aug 12 2014</time>
     
   </p>
 </header>
@@ -94,82 +94,87 @@
 		</div>
 		
 		<p>通常情况下取模运算(mod)和求余(rem)运算被混为一谈，因为在大多数的编程语言里，都用’%’符号表示取模或者求余运算。在这里要提醒大家要十分注意当前环境下’%’运算符的具体意义，因为在有负数存在的情况下，两者的结果是不一样的。</p>
-<p>&nbsp;</p>
 <p>对于整型数a，b来说，取模运算或者求余运算的方法都是：</p>
 <p><span style="color: #0000ff;"><strong>1、求 整数商：c = a/b</strong></span></p>
 <p><span style="color: #0000ff;"><strong>2、计算模或者余数：r = a - c*b</strong></span></p>
-<p>&nbsp;</p>
-<p>求模运算和求余运算在第一步不同: <del></del><strong><span style="color: #ff0000;">求余运算在取c的值时，向0方向舍入（fix()函数）</span>；</strong></p>
-<p>而<del></del><strong><span style="color: #ff0000;">取模运算在计算c的值时，向无穷小方向舍入（floor()函数）</span>。</strong></p>
+<p>求模运算和求余运算在第一步不同: <strong><span style="color: #ff0000;">求余运算在取c的值时，向0方向舍入（fix()函数）</span></strong>；</p>
+<p>而<strong><span style="color: #ff0000;">取模运算在计算c的值时，向无穷小方向舍入（floor()函数）</span></strong>。</p>
 <p>因此，当a和b符号一致时，求模运算和求余运算所得的c的值一致，因此结果一致。但是当符号不一致的时候，结果不一样。</p>
 <p>具体来说，求模运算结果的符号和b一致，求余运算结果的符号和a一致。</p>
-<p>&nbsp;</p>
 <p>在C语言中，%符号表示的是求余运算，在python脚本中，%表示的是取模。（通常取模运算中b不允许是负数，但是在python里面可以在%后面跟负数，因为python语言中除法的结果是向无穷小方向舍入，因此计算结果是取模！）</p>
 <p>下面表格是一些典型的取模或者求余的值。</p>
-<p><style type="text/css"><!--
-table.table_border { border-width: 1px 1px 1px 1px; border-spacing: 2px; border-style: outset outset outset outset; border-color: gray gray gray gray; border-collapse: separate; background-color: white; } table.table_border th { border-width: 1px 1px 1px 1px; padding: 1px 1px 1px 1px; border-style: inset inset inset inset; border-color: gray gray gray gray; background-color: white; -moz-border-radius: 0px 0px 0px 0px; } table.table_border td { border-width: 1px 1px 1px 1px; padding: 1px 1px 1px 1px; border-style: inset inset inset inset; border-color: gray gray gray gray; background-color: white; -moz-border-radius: 0px 0px 0px 0px; text-align: center; } --><br>—&gt;</style></p>
-<p><table class="table_border" width="533" border="1" cellspacing="1" cellpadding="1"></table></p>
-<p><tbody></tbody></p>
-<p><tr></tr></p>
-<p><td align="center"><strong>a
-</strong></td></p>
-<p><td align="center"><strong>b
-</strong></td></p>
-<p><td align="center"><strong>C语言：a%b（求余）
-</strong></td></p>
-<p><td align="center"><strong>Python Shell：a%b（取模）
-</strong></td><br></p>
-<p><tr></tr></p>
-<p><td align="center">-3</td></p>
-<p><td align="center">-5</td></p>
-<p><td align="center">-3</td></p>
-<p><td align="center">-3</td><br></p>
-<p><tr></tr></p>
-<p><td align="center">-3</td></p>
-<p><td align="center">4</td></p>
-<p><td align="center">-3 = -3 - (<span style="color: #ff0000;">0</span>)*4</td></p>
-<p><td align="center">1 = -3 - (<span style="color: #ff0000;">-1</span>)*4</td><br></p>
-<p><tr></tr></p>
-<p><td align="center" valign="top">-3</td></p>
-<p><td align="center" valign="top">2</td></p>
-<p><td align="center" valign="top">-1 = -3 - (<span style="color: #ff0000;">-1</span>)*2</td></p>
-<p><td align="center" valign="top">1 = -3 - (<span style="color: #ff0000;">-2</span>)*2</td><br></p>
-<p><tr></tr></p>
-<p><td align="center" valign="top">-1</td></p>
-<p><td align="center" valign="top">6</td></p>
-<p><td align="center" valign="top">-1 = -1 - (<span style="color: #ff0000;">0</span>)*6</td></p>
-<p><td align="center" valign="top">5 = -1 - (<span style="color: #ff0000;">-1</span>)*6</td><br></p>
-<p><tr></tr></p>
-<p><td align="center" valign="top">-4</td></p>
-<p><td align="center" valign="top">-3</td></p>
-<p><td align="center" valign="top">-1</td></p>
-<p><td align="center" valign="top">-1</td><br></p>
-<p><tr></tr></p>
-<p><td align="center" valign="top">2</td></p>
-<p><td align="center" valign="top">4</td></p>
-<p><td align="center" valign="top">2</td></p>
-<p><td align="center" valign="top">2</td><br></p>
-<p><tr></tr></p>
-<p><td align="center" valign="top">5</td></p>
-<p><td align="center" valign="top">3</td></p>
-<p><td align="center" valign="top">2</td></p>
-<p><td align="center" valign="top">2</td><br></p>
-<p><tr></tr></p>
-<p><td align="center" valign="top">4</td></p>
-<p><td align="center" valign="top">-7</td></p>
-<p><td align="center" valign="top">4 = 4 - (<span style="color: #ff0000;">0</span>)*(-7)</td></p>
-<p><td align="center" valign="top">-3 = 4 - (<span style="color: #ff0000;">-1</span>)*(-7)</td><br></p>
-<p><tr></tr></p>
-<p><td align="center" valign="top">4</td></p>
-<p><td align="center" valign="top">-3</td></p>
-<p><td align="center" valign="top">1 = 4 - (<span style="color: #ff0000;">-1</span>)*(-3)</td></p>
-<p><td align="center" valign="top">-2 = 4 - (<span style="color: #ff0000;">-2</span>)*(-3)</td><br></p>
-<p><tr></tr></p>
-<p><td align="center" valign="top">-6</td></p>
-<p><td align="center" valign="top">-5</td></p>
-<p><td align="center" valign="top">-1</td></p>
-<p><td align="center" valign="top">-1</td><br><br><br><br>&nbsp;</p>
-<p>&nbsp;</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">a</th>
+<th style="text-align:center">b</th>
+<th style="text-align:center">C语言：a%b（求余）</th>
+<th style="text-align:center">Python Shell：a%b（取模）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">-3</td>
+<td style="text-align:center">-5</td>
+<td style="text-align:center">-3</td>
+<td style="text-align:center">-3</td>
+</tr>
+<tr>
+<td style="text-align:center">-3</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">-3 = -3 – (0) * 4</td>
+<td style="text-align:center">1 = -3 – (-1) * 4</td>
+</tr>
+<tr>
+<td style="text-align:center">-3</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">-1 = -3 – (-1) * 2</td>
+<td style="text-align:center">1 = -3 – (-2) * 2</td>
+</tr>
+<tr>
+<td style="text-align:center">-1</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">-1 = -1 – (0) * 6</td>
+<td style="text-align:center">5 = -1 – (-1) * 6</td>
+</tr>
+<tr>
+<td style="text-align:center">-4</td>
+<td style="text-align:center">-3</td>
+<td style="text-align:center">-1</td>
+<td style="text-align:center">-1</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">-7</td>
+<td style="text-align:center">4 = 4 – (0) * (-7)</td>
+<td style="text-align:center">-3 = 4 – (-1) * (-7)</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">-3</td>
+<td style="text-align:center">1 = 4 – (-1) * (-3)</td>
+<td style="text-align:center">-2 = 4 – (-2) * (-3)</td>
+</tr>
+<tr>
+<td style="text-align:center">-6</td>
+<td style="text-align:center">-5</td>
+<td style="text-align:center">-1</td>
+<td style="text-align:center">-1</td>
+</tr>
+</tbody>
+</table>
   
 	</div>
 		<footer class="article-footer clearfix">
