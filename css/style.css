@@ -1973,11 +1973,11 @@ footer {
   text-shadow: none;
 }
 .article-content .gist .gist-file .gist-meta a {
-  color: #2ca6cb;
+  color: #f04e10;
   font-weight: normal;
 }
 .article-content .gist .gist-file .gist-meta a:hover {
-  color: #ea6753;
+  color: #7ba700;
 }
 pre .comment {
   color: #969896;
