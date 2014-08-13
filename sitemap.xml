@@ -2,11 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://zin.so/google1ccac28d6ba0726e.html</loc>
-    <lastmod>2014-08-13T13:25:24.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://zin.so/full-stack/index.html</loc>
     <lastmod>2014-08-12T15:06:16.000Z</lastmod>
   </url>
@@ -37,17 +32,17 @@
   </url>
   
   <url>
+    <loc>http://zin.so/2014/04/10/install-nagios/</loc>
+    <lastmod>2014-08-11T16:02:59.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://zin.so/2014/03/25/drawing/</loc>
     <lastmod>2014-08-11T16:02:59.000Z</lastmod>
   </url>
   
   <url>
     <loc>http://zin.so/about/index.html</loc>
-    <lastmod>2014-08-11T16:02:59.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://zin.so/2014/04/10/install-nagios/</loc>
     <lastmod>2014-08-11T16:02:59.000Z</lastmod>
   </url>
   
