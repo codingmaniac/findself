@@ -2,28 +2,38 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://zin.so/full-stack/index.html</loc>
-    <lastmod>2014-08-12T15:06:16.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://zin.so/books/index.html</loc>
-    <lastmod>2014-08-12T15:03:46.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://zin.so/2014/03/19/meta-refresh/</loc>
-    <lastmod>2014-08-12T14:52:57.000Z</lastmod>
+    <lastmod>2014-08-13T17:32:09.000Z</lastmod>
   </url>
   
   <url>
     <loc>http://zin.so/2014/03/25/install-hhvm/</loc>
-    <lastmod>2014-08-12T14:40:14.000Z</lastmod>
+    <lastmod>2014-08-13T17:31:17.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://zin.so/2014/03/18/git-alias/</loc>
+    <lastmod>2014-08-13T17:19:14.000Z</lastmod>
   </url>
   
   <url>
     <loc>http://zin.so/2014/04/09/using-mysql-socket-in-wordpress/</loc>
-    <lastmod>2014-08-12T14:36:33.000Z</lastmod>
+    <lastmod>2014-08-13T17:14:43.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://zin.so/2014/04/10/install-nagios/</loc>
+    <lastmod>2014-08-13T17:05:51.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://zin.so/books/index.html</loc>
+    <lastmod>2014-08-13T16:48:18.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://zin.so/full-stack/index.html</loc>
+    <lastmod>2014-08-12T15:06:16.000Z</lastmod>
   </url>
   
   <url>
@@ -38,16 +48,6 @@
   
   <url>
     <loc>http://zin.so/about/index.html</loc>
-    <lastmod>2014-08-11T16:02:59.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://zin.so/2014/03/18/git-alias/</loc>
-    <lastmod>2014-08-11T16:02:59.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://zin.so/2014/04/10/install-nagios/</loc>
     <lastmod>2014-08-11T16:02:59.000Z</lastmod>
   </url>
   
