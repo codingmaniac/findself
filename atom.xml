@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Talk about the Soy Sauce]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://zin.so/"/>
-  <updated>2014-08-13T17:32:41.939Z</updated>
+  <updated>2014-08-18T10:38:34.713Z</updated>
   <id>http://zin.so/</id>
   
   <author>
@@ -13,6 +13,42 @@
   </author>
   
   <generator uri="http://zespia.tw/hexo/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[在Mac OSX上通过dd命令制作系统启动盘]]></title>
+    <link href="http://zin.so/2014/08/18/dd-an-os-startup-disk-on-mac-osx/"/>
+    <id>http://zin.so/2014/08/18/dd-an-os-startup-disk-on-mac-osx/</id>
+    <published>2014-08-18T09:21:42.000Z</published>
+    <updated>2014-08-18T10:36:19.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="将iso转换成img文件">将iso转换成img文件</h2>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="input"><span class="prompt">$ hdiutil convert -format UDRW -o &lt;outfile&gt;</span> &lt;path_to_your_iso_file&gt;</span></div></pre></td></tr></table></figure>
+
+<p>＊注：该命令会将iso文件转换成dmg文件，而且Mac OSX会默认在“outfile”后面追加一个“.dmg”。</p>
+<h2 id="查看U盘的盘符">查看U盘的盘符</h2>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">$ diskutil list</div><div class="line">/dev/disk0</div><div class="line">   <span class="comment">#:                       TYPE NAME                    SIZE       IDENTIFIER</span></div><div class="line">   0:      GUID_partition_scheme                        <span class="keyword">*</span>251.0 GB   disk0</div><div class="line">   1:                        EFI EFI                     209.7 MB   disk0s1</div><div class="line">   2:          Apple_CoreStorage                         250.1 GB   disk0s2</div><div class="line">   3:                 Apple_Boot Recovery HD             650.0 MB   disk0s3</div><div class="line">/dev/disk1</div><div class="line">   <span class="comment">#:                       TYPE NAME                    SIZE       IDENTIFIER</span></div><div class="line">   0:                  Apple_HFS MHD                    <span class="keyword">*</span>248.4 GB   disk1</div><div class="line">                                 Logical Volume on disk0s2</div><div class="line">                                 04D26A4D-9A6E-448A-9017-8DA1804D4E93</div><div class="line">                                 Unencrypted</div><div class="line">/dev/disk2</div><div class="line">   <span class="comment">#:                       TYPE NAME                    SIZE       IDENTIFIER</span></div><div class="line">   0:      GUID_partition_scheme                        <span class="keyword">*</span>7.9 GB     disk2</div><div class="line">   1:                        EFI EFI                     209.7 MB   disk2s1</div><div class="line">   2:                  Apple_HFS Yosemite                7.6 GB     disk2s2</div></pre></td></tr></table></figure>
+
+<p>＊注：该命令是查看当前系统上挂载的磁盘，其中/dev/disk2是我的U盘。不同的系统disk后面的数字可能不一样，但一般都是diskN的形式。</p>
+<h2 id="卸载U盘">卸载U盘</h2>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ diskutil unmountDisk /dev/disk2</div><div class="line">Unmount <span class="operator">of</span> all volumes <span class="command"><span class="keyword">on</span> <span class="title">disk2</span> <span class="title">was</span> <span class="title">successful</span></span></div></pre></td></tr></table></figure>
+
+<p>＊注：该命令是卸载U盘挂载的卷，使U盘处于空闲状态。</p>
+<h2 id="将dmg镜像写入U盘">将dmg镜像写入U盘</h2>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>sudo dd <span class="keyword">if</span>=&lt;outfile.dmg&gt; of=<span class="regexp">/dev/rdisk</span>2 bs=<span class="number">1</span>m</div></pre></td></tr></table></figure>
+
+<p>＊注1：该命令将第一步生成的dmg文件写入到U盘/dev/rdisk2（注意不是/dev/disk2）;<br>＊注2：该命令需要sudo权限；<br>＊注3：关于bs大小单位，BSD的dd要用小写“m、g”等，GNU的dd要用大写“M、G”等。</p>
+<h2 id="弹出U盘">弹出U盘</h2>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ diskutil eject <span class="regexp">/dev/</span>disk2</div><div class="line">Disk <span class="regexp">/dev/</span>disk2 ejected</div></pre></td></tr></table></figure>
+
+]]></content>
+    
+    
+      <category term="dd" scheme="http://zin.so/tags/dd/"/>
+    
+      <category term="OSX" scheme="http://zin.so/tags/OSX/"/>
+    
+      <category term="Shell" scheme="http://zin.so/categories/Shell/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[取模运算和求余运算的区别]]></title>

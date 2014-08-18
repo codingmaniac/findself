@@ -4,12 +4,15 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Git常用命令别名 | Zinway&#39;s Blog</title>
+    <title>在Mac OSX上通过dd命令制作系统启动盘 | Zinway&#39;s Blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="Zinway">
     
-    <meta name="description" content="1234567891011121314151617181920212223242526272829303132333435363738394041# Aliasesalias g=&#39;git&#39;alias gst=&#39;git status&#39;alias gd=&#39;git diff&#39;alias gdc=&#39;git">
+    <meta name="description" content="将iso转换成img文件
+1$ hdiutil convert -format UDRW -o &amp;lt;outfile&amp;gt; &amp;lt;path_to_your_iso_file&amp;gt;
+
+＊注：该命令会将iso文件转换成dmg文件，而且Mac OSX会默认在“outfile”后面追加一个“.dmg">
     
     
     
@@ -73,15 +76,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/03/18/git-alias/" title="Git常用命令别名" itemprop="url">Git常用命令别名</a>
+      <a href="/2014/08/18/dd-an-os-startup-disk-on-mac-osx/" title="在Mac OSX上通过dd命令制作系统启动盘" itemprop="url">在Mac OSX上通过dd命令制作系统启动盘</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://zin.so" title="Zinway">Zinway</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-03-18T06:22:47.000Z" itemprop="datePublished">Mar 18 2014</time>
-    Updated:<time datetime="2014-08-13T17:19:14.000Z" itemprop="dateModified">Aug 14 2014</time>
+    <time datetime="2014-08-18T09:21:42.000Z" itemprop="datePublished">Aug 18 2014</time>
+    Updated:<time datetime="2014-08-18T10:36:19.000Z" itemprop="dateModified">Aug 18 2014</time>
     
   </p>
 </header>
@@ -90,10 +93,27 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#将iso转换成img文件"><span class="toc-number">1.</span> <span class="toc-text">将iso转换成img文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#查看U盘的盘符"><span class="toc-number">2.</span> <span class="toc-text">查看U盘的盘符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#卸载U盘"><span class="toc-number">3.</span> <span class="toc-text">卸载U盘</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#将dmg镜像写入U盘"><span class="toc-number">4.</span> <span class="toc-text">将dmg镜像写入U盘</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#弹出U盘"><span class="toc-number">5.</span> <span class="toc-text">弹出U盘</span></a></li></ol>
 		</div>
 		
-		<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"># Aliases</div><div class="line"><span class="keyword">alias</span> g=<span class="attribute">'git</span>'</div><div class="line"><span class="keyword">alias</span> gst=<span class="attribute">'git</span> status'</div><div class="line"><span class="keyword">alias</span> gd=<span class="attribute">'git</span> diff'</div><div class="line"><span class="keyword">alias</span> gdc=<span class="attribute">'git</span> diff <span class="comment">--cached'</span></div><div class="line"><span class="keyword">alias</span> gl=<span class="attribute">'git</span> pull'</div><div class="line"><span class="keyword">alias</span> gup=<span class="attribute">'git</span> pull <span class="comment">--rebase'</span></div><div class="line"><span class="keyword">alias</span> gp=<span class="attribute">'git</span> push'</div><div class="line"><span class="keyword">alias</span> gd=<span class="attribute">'git</span> diff'</div><div class="line"><span class="keyword">alias</span> gc=<span class="attribute">'git</span> commit -v'</div><div class="line"><span class="keyword">alias</span> gc!=<span class="attribute">'git</span> commit -v <span class="comment">--amend'</span></div><div class="line"><span class="keyword">alias</span> gca=<span class="attribute">'git</span> commit -v -a'</div><div class="line"><span class="keyword">alias</span> gca!=<span class="attribute">'git</span> commit -v -a <span class="comment">--amend'</span></div><div class="line"><span class="keyword">alias</span> gcmsg=<span class="attribute">'git</span> commit -m'</div><div class="line"><span class="keyword">alias</span> gco=<span class="attribute">'git</span> checkout'</div><div class="line"><span class="keyword">alias</span> gcm=<span class="attribute">'git</span> checkout master'</div><div class="line"><span class="keyword">alias</span> gr=<span class="attribute">'git</span> remote'</div><div class="line"><span class="keyword">alias</span> grv=<span class="attribute">'git</span> remote -v'</div><div class="line"><span class="keyword">alias</span> grmv=<span class="attribute">'git</span> remote rename'</div><div class="line"><span class="keyword">alias</span> grrm=<span class="attribute">'git</span> remote remove'</div><div class="line"><span class="keyword">alias</span> grset=<span class="attribute">'git</span> remote set-url'</div><div class="line"><span class="keyword">alias</span> grup=<span class="attribute">'git</span> remote update'</div><div class="line"><span class="keyword">alias</span> grbi=<span class="attribute">'git</span> rebase -i'</div><div class="line"><span class="keyword">alias</span> grbc=<span class="attribute">'git</span> rebase <span class="comment">--continue'</span></div><div class="line"><span class="keyword">alias</span> grba=<span class="attribute">'git</span> rebase <span class="comment">--abort'</span></div><div class="line"><span class="keyword">alias</span> gb=<span class="attribute">'git</span> branch'</div><div class="line"><span class="keyword">alias</span> gba=<span class="attribute">'git</span> branch -a'</div><div class="line"><span class="keyword">alias</span> gcount=<span class="attribute">'git</span> shortlog -sn'</div><div class="line"><span class="keyword">alias</span> gcl=<span class="attribute">'git</span> config <span class="comment">--list'</span></div><div class="line"><span class="keyword">alias</span> gcp=<span class="attribute">'git</span> cherry-pick'</div><div class="line"><span class="keyword">alias</span> glg=<span class="attribute">'git</span> log <span class="comment">--stat --max-count=10'</span></div><div class="line"><span class="keyword">alias</span> glgg=<span class="attribute">'git</span> log <span class="comment">--graph --max-count=10'</span></div><div class="line"><span class="keyword">alias</span> glgga=<span class="attribute">'git</span> log <span class="comment">--graph --decorate --all'</span></div><div class="line"><span class="keyword">alias</span> glo=<span class="attribute">'git</span> log <span class="comment">--oneline'</span></div><div class="line"><span class="keyword">alias</span> gss=<span class="attribute">'git</span> status -s'</div><div class="line"><span class="keyword">alias</span> ga=<span class="attribute">'git</span> add'</div><div class="line"><span class="keyword">alias</span> gm=<span class="attribute">'git</span> merge'</div><div class="line"><span class="keyword">alias</span> grh=<span class="attribute">'git</span> reset HEAD'</div><div class="line"><span class="keyword">alias</span> grhh=<span class="attribute">'git</span> reset HEAD <span class="comment">--hard'</span></div><div class="line"><span class="keyword">alias</span> gclean=<span class="attribute">'git</span> reset <span class="comment">--hard &amp;&amp; git clean -dfx'</span></div><div class="line"><span class="keyword">alias</span> gwc=<span class="attribute">'git</span> whatchanged -p <span class="comment">--abbrev-commit --pretty=medium'</span></div></pre></td></tr></table></figure>
+		<h2 id="将iso转换成img文件">将iso转换成img文件</h2>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="input"><span class="prompt">$ hdiutil convert -format UDRW -o &lt;outfile&gt;</span> &lt;path_to_your_iso_file&gt;</span></div></pre></td></tr></table></figure>
+
+<p>＊注：该命令会将iso文件转换成dmg文件，而且Mac OSX会默认在“outfile”后面追加一个“.dmg”。</p>
+<h2 id="查看U盘的盘符">查看U盘的盘符</h2>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">$ diskutil list</div><div class="line">/dev/disk0</div><div class="line">   <span class="comment">#:                       TYPE NAME                    SIZE       IDENTIFIER</span></div><div class="line">   0:      GUID_partition_scheme                        <span class="keyword">*</span>251.0 GB   disk0</div><div class="line">   1:                        EFI EFI                     209.7 MB   disk0s1</div><div class="line">   2:          Apple_CoreStorage                         250.1 GB   disk0s2</div><div class="line">   3:                 Apple_Boot Recovery HD             650.0 MB   disk0s3</div><div class="line">/dev/disk1</div><div class="line">   <span class="comment">#:                       TYPE NAME                    SIZE       IDENTIFIER</span></div><div class="line">   0:                  Apple_HFS MHD                    <span class="keyword">*</span>248.4 GB   disk1</div><div class="line">                                 Logical Volume on disk0s2</div><div class="line">                                 04D26A4D-9A6E-448A-9017-8DA1804D4E93</div><div class="line">                                 Unencrypted</div><div class="line">/dev/disk2</div><div class="line">   <span class="comment">#:                       TYPE NAME                    SIZE       IDENTIFIER</span></div><div class="line">   0:      GUID_partition_scheme                        <span class="keyword">*</span>7.9 GB     disk2</div><div class="line">   1:                        EFI EFI                     209.7 MB   disk2s1</div><div class="line">   2:                  Apple_HFS Yosemite                7.6 GB     disk2s2</div></pre></td></tr></table></figure>
+
+<p>＊注：该命令是查看当前系统上挂载的磁盘，其中/dev/disk2是我的U盘。不同的系统disk后面的数字可能不一样，但一般都是diskN的形式。</p>
+<h2 id="卸载U盘">卸载U盘</h2>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ diskutil unmountDisk /dev/disk2</div><div class="line">Unmount <span class="operator">of</span> all volumes <span class="command"><span class="keyword">on</span> <span class="title">disk2</span> <span class="title">was</span> <span class="title">successful</span></span></div></pre></td></tr></table></figure>
+
+<p>＊注：该命令是卸载U盘挂载的卷，使U盘处于空闲状态。</p>
+<h2 id="将dmg镜像写入U盘">将dmg镜像写入U盘</h2>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>sudo dd <span class="keyword">if</span>=&lt;outfile.dmg&gt; of=<span class="regexp">/dev/rdisk</span>2 bs=<span class="number">1</span>m</div></pre></td></tr></table></figure>
+
+<p>＊注1：该命令将第一步生成的dmg文件写入到U盘/dev/rdisk2（注意不是/dev/disk2）;<br>＊注2：该命令需要sudo权限；<br>＊注3：关于bs大小单位，BSD的dd要用小写“m、g”等，GNU的dd要用大写“M、G”等。</p>
+<h2 id="弹出U盘">弹出U盘</h2>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ diskutil eject <span class="regexp">/dev/</span>disk2</div><div class="line">Disk <span class="regexp">/dev/</span>disk2 ejected</div></pre></td></tr></table></figure>
 
   
 	</div>
@@ -101,7 +121,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/alias/">alias</a><a href="/tags/git/">git</a>
+  <span></span> <a href="/tags/dd/">dd</a><a href="/tags/OSX/">OSX</a>
   </div>
 
 
@@ -114,7 +134,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://zin.so/2014/03/18/git-alias/" data-title="Git常用命令别名 | Zinway&#39;s Blog" data-tsina="null" class="share clearfix">
+  <div data-url="http://zin.so/2014/08/18/dd-an-os-startup-disk-on-mac-osx/" data-title="在Mac OSX上通过dd命令制作系统启动盘 | Zinway&#39;s Blog" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -123,14 +143,14 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2014/03/19/meta-refresh/" title="首页refresh重定向">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  首页refresh重定向</span>
+
+<div class="next">
+<a href="/2014/04/16/diff-mod-rem/"  title="取模运算和求余运算的区别">
+ <strong>NEXT:</strong><br/> 
+ <span>取模运算和求余运算的区别
+</span>
 </a>
 </div>
-
 
 </nav>
 
@@ -144,7 +164,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#将iso转换成img文件"><span class="toc-number">1.</span> <span class="toc-text">将iso转换成img文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#查看U盘的盘符"><span class="toc-number">2.</span> <span class="toc-text">查看U盘的盘符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#卸载U盘"><span class="toc-number">3.</span> <span class="toc-text">卸载U盘</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#将dmg镜像写入U盘"><span class="toc-number">4.</span> <span class="toc-text">将dmg镜像写入U盘</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#弹出U盘"><span class="toc-number">5.</span> <span class="toc-text">弹出U盘</span></a></li></ol>
   </div>
 
 <div id="asidepart">
