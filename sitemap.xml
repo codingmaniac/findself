@@ -2,13 +2,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://zin.so/2014/03/19/meta-refresh/</loc>
-    <lastmod>2014-08-18T10:59:42.000Z</lastmod>
+    <loc>http://zin.so/2014/08/21/how-to-install-openvpn-server-on-centos-7/</loc>
+    <lastmod>2014-08-21T11:09:32.000Z</lastmod>
   </url>
   
   <url>
     <loc>http://zin.so/2014/08/18/dd-an-os-startup-disk-on-mac-osx/</loc>
-    <lastmod>2014-08-18T10:36:19.000Z</lastmod>
+    <lastmod>2014-08-21T09:48:12.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://zin.so/2014/03/19/meta-refresh/</loc>
+    <lastmod>2014-08-18T10:59:42.000Z</lastmod>
   </url>
   
   <url>

@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Talk about the Soy Sauce]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://zin.so/"/>
-  <updated>2014-08-18T10:59:49.611Z</updated>
+  <updated>2014-08-21T11:10:13.747Z</updated>
   <id>http://zin.so/</id>
   
   <author>
@@ -15,11 +15,54 @@
   <generator uri="http://zespia.tw/hexo/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[在CentOS 7上安装OpenVPN Server]]></title>
+    <link href="http://zin.so/2014/08/21/how-to-install-openvpn-server-on-centos-7/"/>
+    <id>http://zin.so/2014/08/21/how-to-install-openvpn-server-on-centos-7/</id>
+    <published>2014-08-21T09:34:35.000Z</published>
+    <updated>2014-08-21T11:09:32.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="安装openvpn">安装openvpn</h2>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">yum <span class="operator"><span class="keyword">install</span> -y openssl openssl-devel lzo lzo-devel pam pam-devel</span></div><div class="line">yum <span class="keyword">install</span> openvpn -y</div></pre></td></tr></table></figure>
+
+<p>＊注：yum安装的方式需要有epel源。</p>
+<h2 id="安装easy-rsa">安装easy-rsa</h2>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">cd</span> /etc/openvpn</div><div class="line">wget -<span class="keyword">c</span> http<span class="variable">s:</span>//github.<span class="keyword">com</span>/OpenVPN/easy-rsa/archive/master.zip</div><div class="line">unzip master.zip</div><div class="line">mv easy-rsa-master easy-rsa</div><div class="line">rm -<span class="keyword">f</span> master.zip</div></pre></td></tr></table></figure>
+
+<h2 id="初始化pki">初始化pki</h2>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">cd</span> /etc/openvpn/easy-rsa/easyrsa3</div><div class="line">./easyrsa init-pki</div><div class="line">./easyrsa build-<span class="keyword">ca</span> nopass</div><div class="line">./easyrsa gen-req &lt;EntityName&gt; nopass</div><div class="line">./easyrsa <span class="keyword">sign</span>-req client &lt;EntityName&gt;</div><div class="line">./easyrsa gen-dh</div><div class="line"><span class="keyword">ln</span> -<span class="keyword">s</span> easy-rsa/easyrsa3/pki /etc/openvpn/pki</div><div class="line">openvpn --genkey --secret /etc/openvpn/pki/<span class="keyword">ta</span>.key</div></pre></td></tr></table></figure>
+
+<p>＊注：easyrsa3的使用方法可以参考<a href="https://github.com/OpenVPN/easy-rsa/blob/master/README.quickstart.md" target="_blank" rel="external">这一篇easyrsa3官方文档</a></p>
+<h2 id="配置server-conf">配置server.conf</h2>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">cd</span> /etc/openvpn</div><div class="line"><span class="keyword">cp</span> /usr/share/doc/openvpn-<span class="number">2.3</span>.<span class="number">2</span>/sample/sample-config-<span class="keyword">files</span>/server.<span class="keyword">conf</span> .</div><div class="line"><span class="keyword">vim</span> server.<span class="keyword">conf</span></div><div class="line">### 修改下列几项</div><div class="line"><span class="keyword">ca</span> pki/<span class="keyword">ca</span>.crt</div><div class="line">cert pki/issued/server.crt</div><div class="line">key pki/private/server.key</div><div class="line">dh pki/dh.pem</div><div class="line">tls-auth pki/<span class="keyword">ta</span>.key <span class="number">0</span></div><div class="line">user nobody</div><div class="line">group nobody</div><div class="line">status /var/<span class="built_in">log</span>/openvpn/openvpn-status.<span class="built_in">log</span></div><div class="line"><span class="built_in">log</span>         /var/<span class="built_in">log</span>/openvpn/openvpn.<span class="built_in">log</span></div><div class="line"><span class="built_in">log</span>-<span class="built_in">append</span>  /var/<span class="built_in">log</span>/openvpn/openvpn.<span class="built_in">log</span></div><div class="line">### 修改完成</div><div class="line"><span class="built_in">mkdir</span> /var/<span class="built_in">log</span>/openvpn</div></pre></td></tr></table></figure>
+
+<h2 id="配置openvpn-service">配置openvpn.service</h2>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">cd</span> /usr/lib/systemd/<span class="built_in">system</span>/</div><div class="line">mv openvpn@.service openvpn.service</div><div class="line"><span class="keyword">vim</span> openvpn.service ### 修改pid和<span class="keyword">conf</span>文件名称</div><div class="line">systemctl enable openvpn.service</div><div class="line">systemctl start openvpn</div></pre></td></tr></table></figure>
+
+<h2 id="配置NAT转发">配置NAT转发</h2>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">echo <span class="string">"net.ipv4.ip_forward = 1"</span> <span class="input">&gt;&gt; /etc/sysctl.conf</span></div><div class="line"><span class="input"><span class="prompt">sysctl -p</span></span></div><div class="line">iptables -A INPUT -p TCP --dport 1194 -j ACCEPT</div><div class="line">iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE</div><div class="line">iptables-save &gt; /etc/sysconfig/iptables</div></pre></td></tr></table></figure>
+
+<h2 id="打包客户端配置文件">打包客户端配置文件</h2>
+<p>简单写了个打包脚本：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="shebang">#!/bin/bash</span></div><div class="line"><span class="keyword">if</span> [ <span class="variable">$#</span> != <span class="number">1</span> ];<span class="keyword">then</span></div><div class="line">    <span class="built_in">echo</span> <span class="string">"Usage: <span class="variable">$0</span> comName"</span></div><div class="line">    <span class="keyword">exit</span> <span class="number">1</span></div><div class="line"><span class="keyword">fi</span></div><div class="line">comName=<span class="variable">$1</span></div><div class="line">pkiDir=/etc/openvpn/easy-rsa/easyrsa3/pki</div><div class="line">ca_crtFile=<span class="variable">$pkiDir</span>/ca.crt</div><div class="line">crtFile=<span class="variable">$pkiDir</span>/issued/<span class="variable">$comName</span>.crt</div><div class="line">keyFile=<span class="variable">$pkiDir</span>/private/<span class="variable">$comName</span>.key</div><div class="line">ta_keyFile=<span class="variable">$pkiDir</span>/ta.key</div><div class="line">mkdir ~/<span class="variable">$comName</span>\_vpn</div><div class="line">cp <span class="variable">$ca_crtFile</span> <span class="variable">$crtFile</span> <span class="variable">$keyFile</span> <span class="variable">$ta_keyFile</span> ~/<span class="variable">$comName</span>\_vpn</div><div class="line">cat &gt; ~/<span class="variable">$comName</span>\_vpn/<span class="variable">$comName</span>.ovpn &lt;&lt;EOF</div><div class="line">client</div><div class="line">remote your.vp.server</div><div class="line">proto udp</div><div class="line">dev tun</div><div class="line">ca ca.crt</div><div class="line">cert <span class="variable">$comName</span>.crt</div><div class="line">key <span class="variable">$comName</span>.key</div><div class="line">tls-auth ta.key <span class="number">1</span></div><div class="line">comp-lzo</div><div class="line">nobind</div><div class="line">EOF</div><div class="line"><span class="built_in">cd</span></div><div class="line">tar czvf <span class="variable">$comName</span>\_vpn.tgz <span class="variable">$comName</span>\_vpn</div></pre></td></tr></table></figure>
+
+<h2 id="连接测试">连接测试</h2>
+<p>客户端连接测试 &amp; trouble shooting</p>
+]]></content>
+    
+    
+      <category term="OpenVPN" scheme="http://zin.so/tags/OpenVPN/"/>
+    
+      <category term="CentOS 7" scheme="http://zin.so/tags/CentOS-7/"/>
+    
+      <category term="Tools" scheme="http://zin.so/categories/Tools/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[在Mac OSX上通过dd命令制作系统启动盘]]></title>
     <link href="http://zin.so/2014/08/18/dd-an-os-startup-disk-on-mac-osx/"/>
     <id>http://zin.so/2014/08/18/dd-an-os-startup-disk-on-mac-osx/</id>
     <published>2014-08-18T09:21:42.000Z</published>
-    <updated>2014-08-18T10:36:19.000Z</updated>
+    <updated>2014-08-21T09:48:12.000Z</updated>
     <content type="html"><![CDATA[<h2 id="将iso转换成img文件">将iso转换成img文件</h2>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="input"><span class="prompt">$ hdiutil convert -format UDRW -o &lt;outfile&gt;</span> &lt;path_to_your_iso_file&gt;</span></div></pre></td></tr></table></figure>
 
@@ -44,7 +87,7 @@
     
       <category term="dd" scheme="http://zin.so/tags/dd/"/>
     
-      <category term="OSX" scheme="http://zin.so/tags/OSX/"/>
+      <category term="Mac OSX" scheme="http://zin.so/tags/Mac-OSX/"/>
     
       <category term="Shell" scheme="http://zin.so/categories/Shell/"/>
     
