@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Talk about the Soy Sauce]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://zin.so/"/>
-  <updated>2014-08-21T11:12:49.605Z</updated>
+  <updated>2014-08-21T14:17:30.464Z</updated>
   <id>http://zin.so/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://zin.so/2014/08/21/how-to-install-openvpn-server-on-centos-7/"/>
     <id>http://zin.so/2014/08/21/how-to-install-openvpn-server-on-centos-7/</id>
     <published>2014-08-21T09:34:35.000Z</published>
-    <updated>2014-08-21T11:09:32.000Z</updated>
+    <updated>2014-08-21T14:17:18.000Z</updated>
     <content type="html"><![CDATA[<h2 id="安装openvpn">安装openvpn</h2>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">yum <span class="operator"><span class="keyword">install</span> -y openssl openssl-devel lzo lzo-devel pam pam-devel</span></div><div class="line">yum <span class="keyword">install</span> openvpn -y</div></pre></td></tr></table></figure>
 
@@ -38,7 +38,7 @@
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">cd</span> /usr/lib/systemd/<span class="built_in">system</span>/</div><div class="line">mv openvpn@.service openvpn.service</div><div class="line"><span class="keyword">vim</span> openvpn.service ### 修改pid和<span class="keyword">conf</span>文件名称</div><div class="line">systemctl enable openvpn.service</div><div class="line">systemctl start openvpn</div></pre></td></tr></table></figure>
 
 <h2 id="配置NAT转发">配置NAT转发</h2>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">echo <span class="string">"net.ipv4.ip_forward = 1"</span> <span class="input">&gt;&gt; /etc/sysctl.conf</span></div><div class="line"><span class="input"><span class="prompt">sysctl -p</span></span></div><div class="line">iptables -A INPUT -p TCP --dport 1194 -j ACCEPT</div><div class="line">iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE</div><div class="line">iptables-save &gt; /etc/sysconfig/iptables</div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">echo <span class="string">"net.ipv4.ip_forward = 1"</span> <span class="input">&gt;&gt; /etc/sysctl.conf</span></div><div class="line"><span class="input"><span class="prompt">sysctl -p</span></span></div><div class="line">iptables -A INPUT -p UDP --dport 1194 -j ACCEPT</div><div class="line">iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -j MASQUERADE</div><div class="line">iptables-save &gt; /etc/sysconfig/iptables</div></pre></td></tr></table></figure>
 
 <h2 id="打包客户端配置文件">打包客户端配置文件</h2>
 <p>简单写了个打包脚本：</p>
