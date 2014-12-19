@@ -1,0 +1,432 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>通过iptables去除DNS污染 | Zinway&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Zinway">
+    
+    <meta name="description" content="GFW的DNS劫持原理说起来挺简单，GFW对境外DNS的劫持，是在发现你请求敏感域名的DNS记录时，伪装成你请求的DNS返回一个污染的数据包给你的解析器，但并不会丢弃你向境外DNS的请求，也不会丢弃境外DNS返回的正确解析结果，他只是让错误的数据抢先回来欺骗了你的解析器而已，毕竟他直接从国内给你发污">
+    
+    
+    
+    
+    <link rel="alternate" href="/atom.xml" title="Zinway&#39;s Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/zin.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/zin.png">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="Zinway&#39;s Blog" title="Zinway&#39;s Blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Zinway&#39;s Blog">Zinway&#39;s Blog</a></h1>
+				<h2 class="blog-motto">Talk about the Soy Sauce</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+						<li><a href="/full-stack">Full Stack</a></li>
+					
+						<li><a href="/books">书架</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:zin.so">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/12/19/anti-dns-poison-with-iptables/" title="通过iptables去除DNS污染" itemprop="url">通过iptables去除DNS污染</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://zin.so" title="Zinway">Zinway</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-12-19T08:26:07.000Z" itemprop="datePublished">Dec 19 2014</time>
+    Updated:<time datetime="2014-12-19T10:03:29.000Z" itemprop="dateModified">Dec 19 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+		</div>
+		
+		<p><strong>GFW的DNS劫持原理</strong>说起来挺简单，GFW对境外DNS的劫持，是在发现你请求敏感域名的DNS记录时，伪装成你请求的DNS返回一个污染的数据包给你的解析器，但并不会丢弃你向境外DNS的请求，也不会丢弃境外DNS返回的正确解析结果，他只是让错误的数据抢先回来欺骗了你的解析器而已，毕竟他直接从国内给你发污染数据怎么都比国外DNS返回正确数据要快，而解析器在先收到了欺骗数据包之后，就不会再管后面返回的正确数据了，这样你就被DNS劫持了。</p>
+<p><strong>一般的解决办法</strong>就是通过VPN通道访问DNS服务器，以获得干净的解析结果。本文的解决方案：我们可以在iptables的防火墙规则中，检测UDP的源端口为53的数据（DNS查询是通过UDP查询服务器的53端口实现的），一旦发现解析数据中包含有被GFW常用的用于DNS污染和劫持的IP，就丢弃这个数据包，对dnsmasq这些解析器来说污染的数据包根本就不会到达（本文涉及的iptables规则会抢先于任何应用先处理网络数据），等正确的境外DNS返回的数据到达后并不会被过滤，这样dnsmasq就获得了正确的DNS解析数据。</p>
+<p>首先我们要找到被GFW用于DNS污染和劫持的IP，目前搜集并统计到的无效IP（参考<a href="https://github.com/clowwindy/ChinaDNS-C/blob/master/iplist.txta" target="_blank" rel="external">clowwindy的iplist.txt</a>）如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line">118.5.49.6</div><div class="line">128.121.126.139</div><div class="line">159.106.121.75</div><div class="line">169.132.13.103</div><div class="line">188.5.4.96</div><div class="line">189.163.17.5</div><div class="line">192.67.198.6</div><div class="line">197.4.4.12</div><div class="line">202.106.1.2</div><div class="line">202.181.7.85</div><div class="line">203.161.230.171</div><div class="line">203.98.7.65</div><div class="line">207.12.88.98</div><div class="line">208.56.31.43</div><div class="line">209.145.54.50</div><div class="line">209.220.30.174</div><div class="line">209.36.73.33</div><div class="line">209.85.229.138</div><div class="line">211.94.66.147</div><div class="line">213.169.251.35</div><div class="line">216.221.188.182</div><div class="line">216.234.179.13</div><div class="line">23.89.5.60</div><div class="line">243.185.187.39</div><div class="line">249.129.46.48</div><div class="line">253.157.14.165</div><div class="line">37.61.54.158</div><div class="line">4.36.66.178</div><div class="line">46.82.174.68</div><div class="line">49.2.123.56</div><div class="line">54.76.135.1</div><div class="line">59.24.3.173</div><div class="line">64.33.88.161</div><div class="line">64.33.99.47</div><div class="line">64.66.163.251</div><div class="line">65.104.202.252</div><div class="line">65.160.219.113</div><div class="line">66.45.252.237</div><div class="line">72.14.205.104</div><div class="line">72.14.205.99</div><div class="line">74.125.127.102</div><div class="line">74.125.155.102</div><div class="line">74.125.39.102</div><div class="line">74.125.39.113</div><div class="line">77.4.7.92</div><div class="line">78.16.49.15</div><div class="line">8.7.198.45</div><div class="line">93.46.8.89</div></pre></td></tr></table></figure>
+
+<p>后面需要用到这些IP的16进制，本文推荐个转换工具netmask（附netmask源码包）。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># netmask --help</span></div><div class="line">This is netmask, <span class="operator">an</span> address netmask generation utility</div><div class="line">Usage: netmask spec [spec ...]</div><div class="line">  -h, <span class="comment">--helpPrint a summary of the options</span></div><div class="line">  -v, <span class="comment">--versionPrint the version number</span></div><div class="line">  -d, <span class="comment">--debugPrint status/progress information</span></div><div class="line">  -s, <span class="comment">--standardOutput address/netmask pairs</span></div><div class="line">  -c, <span class="comment">--cidrOutput CIDR format address lists</span></div><div class="line">  -i, <span class="comment">--ciscoOutput Cisco style address lists</span></div><div class="line">  -r, <span class="comment">--rangeOutput ip address ranges</span></div><div class="line">  -x, <span class="comment">--hexOutput address/netmask pairs in hex</span></div><div class="line">  -o, <span class="comment">--octalOutput address/netmask pairs in octal</span></div><div class="line">  -b, <span class="comment">--binaryOutput address/netmask pairs in binary</span></div><div class="line">  -n, <span class="comment">--nodnsDisable DNS lookups for addresses</span></div><div class="line">Definitions:</div><div class="line">  <span class="operator">a</span> spec can be <span class="keyword">any</span> <span class="operator">of</span>:</div><div class="line">    address</div><div class="line">    address:address</div><div class="line">    address:+address</div><div class="line">    address/mask</div><div class="line">  <span class="operator">an</span> address can be <span class="keyword">any</span> <span class="operator">of</span>:</div><div class="line">    NULLCMD=decimal <span class="built_in">number</span></div><div class="line">    <span class="number">0</span>Noctal <span class="built_in">number</span></div><div class="line">    <span class="number">0</span>xNhex <span class="built_in">number</span></div><div class="line">    N.N.N.Ndotted quad</div><div class="line">    hostname dns domain name</div><div class="line">  <span class="operator">a</span> mask is <span class="operator">the</span> <span class="built_in">number</span> <span class="operator">of</span> bits <span class="built_in">set</span> <span class="built_in">to</span> <span class="constant">one</span> <span class="built_in">from</span> <span class="operator">the</span> left</div></pre></td></tr></table></figure>
+
+<p>用下面的命令进行点分十进制转十六进制处理：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">netmask -x `cat iplist.txt` |cut <span class="operator">-d</span>/ <span class="operator">-f</span>1 |cut -dx <span class="operator">-f</span>2</div></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="number">042442</span>b2</div><div class="line"><span class="number">0807</span>c62d</div><div class="line"><span class="number">1759053</span>c</div><div class="line"><span class="number">253</span>d369e</div><div class="line"><span class="number">2e52</span>ae44</div><div class="line"><span class="number">31027</span>b38</div><div class="line"><span class="number">364</span>c8701</div><div class="line"><span class="number">3</span>b1803ad</div><div class="line"><span class="number">402158</span>a1</div><div class="line"><span class="number">4021632f</span></div><div class="line"><span class="number">4042</span>a3fb</div><div class="line"><span class="number">4168</span>cafc</div><div class="line"><span class="number">41</span>a0db71</div><div class="line"><span class="number">422</span>dfced</div><div class="line"><span class="number">480</span>ecd63</div><div class="line"><span class="number">480</span>ecd68</div><div class="line"><span class="number">4</span>a7d2766</div><div class="line"><span class="number">4</span>a7d2771</div><div class="line"><span class="number">4</span>a7d7f66</div><div class="line"><span class="number">4</span>a7d9b66</div><div class="line"><span class="number">4</span>d04075c</div><div class="line"><span class="number">4e10310</span>f</div><div class="line"><span class="number">5</span>d2e0859</div><div class="line"><span class="number">76053106</span></div><div class="line"><span class="number">80797e8</span>b</div><div class="line"><span class="number">9f</span>6a794b</div><div class="line">a9840d67</div><div class="line">bc050460</div><div class="line">bda31105</div><div class="line">c043c606</div><div class="line">c504040c</div><div class="line">ca6a0102</div><div class="line">cab50755</div><div class="line">cb620741</div><div class="line">cba1e6ab</div><div class="line">cf0c5862</div><div class="line">d0381f2b</div><div class="line">d1244921</div><div class="line">d155e58a</div><div class="line">d1913632</div><div class="line">d1dc1eae</div><div class="line">d35e4293</div><div class="line">d5a9fb23</div><div class="line">d8ddbcb6</div><div class="line">d8eab30d</div><div class="line">f3b9bb27</div><div class="line">f9812e30</div><div class="line">fd9d0ea5</div></pre></td></tr></table></figure>
+
+<p>然后就直接用iptables匹配包含这些ip的dns包并进行丢弃：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|042442b2|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div></pre></td></tr></table></figure>
+
+<p>简单解释下，-m string表示启用string模块进行匹配，—algo bm表示启用贝叶(Boyer-Moore)字符串搜索算法，另一种算法是kmp(Knuth-Pratt-Morris)，具体应该只是效率和不同应用的区别，算法原理我就不细究了。<br>—hex-string就是要匹配的IP地址的HEX格式了，注意这里前面不要有0x表示16进制了，直接写16进制数据就行，后面跟着的就是IP地址的16进制格式。<br>—from 60 —to 180都是表示搜索的偏置范围(offset)，从第60 byte开始到180 byte结束，一般来说DNS返回包的长度很少有超过180字节，而IP值的位置因为协议格式的关系，基本上不可能出现在60字节之前，所以指定这个范围是足够的，同时也可以大大减轻搜索算法的运算压力。如果你担心有什么奇葩DNS返回的结果在这范围之外，删除这两个偏置选项就行了，这样会默认搜索整个字符串，但相应的搜索消耗的CPU资源就更多了。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|042442b2|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|0807c62d|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|1759053c|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|253d369e|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|2e52ae44|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|31027b38|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|364c8701|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|3b1803ad|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|402158a1|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|4021632f|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|4042a3fb|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|4168cafc|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|41a0db71|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|422dfced|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|480ecd63|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|480ecd68|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|4a7d2766|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|4a7d2771|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|4a7d7f66|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|4a7d9b66|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|4d04075c|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|4e10310f|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|5d2e0859|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|76053106|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|80797e8b|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|9f6a794b|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|a9840d67|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|bc050460|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|bda31105|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|c043c606|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|c504040c|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|ca6a0102|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|cab50755|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|cb620741|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|cba1e6ab|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|cf0c5862|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|d0381f2b|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|d1244921|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|d155e58a|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|d1913632|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|d1dc1eae|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|d35e4293|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|d5a9fb23|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|d8ddbcb6|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|d8eab30d|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|f3b9bb27|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|f9812e30|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div><div class="line">iptables -<span class="keyword">t</span> mangle -I PREROUTING -<span class="keyword">p</span> udp --sport <span class="number">53</span> -<span class="keyword">m</span> <span class="built_in">string</span> --algo <span class="keyword">bm</span> --hex-<span class="built_in">string</span> <span class="string">"|fd9d0ea5|"</span> --from <span class="number">60</span> --<span class="keyword">to</span> <span class="number">180</span> -<span class="keyword">j</span> DROP</div></pre></td></tr></table></figure>
+
+<p>每个IP分别写一条这样的规则，然后就用你自己熟悉的方式来处理这些iptables规则。</p>
+<hr>
+<p><strong>More~</strong><br>iptables过滤空包：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t mangle -I PREROUTING -p udp --sport <span class="number">53</span> -m <span class="keyword">u32</span> --<span class="keyword">u32</span> <span class="string">"0&0x0F000000=0x05000000 && 0&gt;&gt;22&0x3C@8&0x810F=0x8000 && 0&gt;&gt;22&0x3C@12&0xFFFF=0x0000"</span> -j DROP</div></pre></td></tr></table></figure>
+
+<p>对关键部分解释下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="number">0</span>&gt;&gt;<span class="number">22</span>&<span class="number">0x3C</span>@<span class="number">8</span>&<span class="number">0x810F</span>=<span class="number">0x8000</span></div></pre></td></tr></table></figure>
+
+<p>“0&gt;&gt;22&amp;0x3C”这部分是很常用的一个规则，你在别的地方也应该经常看到，表示取出IP报文头的长度，后面的@表示跳过这么多长度，也就是跳过IP头到UDP头部分。<br>8表示从第8个字节开始抓4个字节，其中第10个字节的第一位如果是1就表示这是一个响应包，0对应的是查询报，这个我们不用管；<br>第十个字节的最低位是RD位，劫持包的RD位是0；<br>第11个字节的低4位就是Reply Code的位置。<br>将这4个字节和0x810F做与操作就提出了响应标志位，RD位和Reply Code的值，判断出是一个RD=0，Reply Code为无错误的响应包，再继续和下面的规则匹配。<br>这三个条件缺一不可，尤其是对RD位的检查，这几乎是GFW劫持包最重要的特征。</p>
+<hr>
+<p>参考：</p>
+<ul>
+<li><a href="http://www.lifetyper.com/2014/06/anti-dns-poison-without-vpn.html" target="_blank" rel="external">无需VPN的OpenWRT DNS防污染方法</a></li>
+<li><a href="https://github.com/clowwindy/ChinaDNS-C/blob/master/iplist.txt" target="_blank" rel="external">clowwindy/ChinaDNS-C/iplist.txt</a></li>
+<li><a href="https://github.com/hackgfw/openwrt-gfw" target="_blank" rel="external">hackgfw/openwrt-gfw</a></li>
+</ul>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/DNS/">DNS</a><a href="/tags/iptables/">iptables</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Network/">Network</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://zin.so/2014/12/19/anti-dns-poison-with-iptables/" data-title="通过iptables去除DNS污染 | Zinway&#39;s Blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2014/08/25/cursor-control-on-mac-osx/"  title="Mac OSX光标控制">
+ <strong>NEXT:</strong><br/> 
+ <span>Mac OSX光标控制
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/Code/" title="Code">Code<sup>1</sup></a></li>
+		
+			<li><a href="/categories/JavaScript/" title="JavaScript">JavaScript<sup>1</sup></a></li>
+		
+			<li><a href="/categories/LNMP-Stack/" title="LNMP Stack">LNMP Stack<sup>3</sup></a></li>
+		
+			<li><a href="/categories/Network/" title="Network">Network<sup>1</sup></a></li>
+		
+			<li><a href="/categories/Shell/" title="Shell">Shell<sup>3</sup></a></li>
+		
+			<li><a href="/categories/Tools/" title="Tools">Tools<sup>2</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/CentOS-7/" title="CentOS 7">CentOS 7<sup>1</sup></a></li>
+		
+			<li><a href="/tags/DNS/" title="DNS">DNS<sup>1</sup></a></li>
+		
+			<li><a href="/tags/HHVM/" title="HHVM">HHVM<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Mac-OSX/" title="Mac OSX">Mac OSX<sup>2</sup></a></li>
+		
+			<li><a href="/tags/MySQL/" title="MySQL">MySQL<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Nagios/" title="Nagios">Nagios<sup>1</sup></a></li>
+		
+			<li><a href="/tags/OpenVPN/" title="OpenVPN">OpenVPN<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Python/" title="Python">Python<sup>1</sup></a></li>
+		
+			<li><a href="/tags/alias/" title="alias">alias<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>1</sup></a></li>
+		
+			<li><a href="/tags/dd/" title="dd">dd<sup>1</sup></a></li>
+		
+			<li><a href="/tags/git/" title="git">git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/iptables/" title="iptables">iptables<sup>1</sup></a></li>
+		
+			<li><a href="/tags/js/" title="js">js<sup>1</sup></a></li>
+		
+			<li><a href="/tags/refresh/" title="refresh">refresh<sup>1</sup></a></li>
+		
+			<li><a href="/tags/rewrite/" title="rewrite">rewrite<sup>1</sup></a></li>
+		
+			<li><a href="/tags/运算/" title="运算">运算<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+  <div class="archiveslist">
+    <p class="asidetitle"><a href="/archives">Archives</a></p>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12">December 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08">August 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04">April 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">March 2014</a><span class="archive-list-count">4</span></li></ul>
+  </div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+      <li><a href="http://zespia.tw/hexo/" target="_blank" title="Hexo">Hexo</a></li>
+      <li><a href="https://zhoushuji.com/" target="_blank" title="周书记's Blog">周书记's Blog</a></li>
+    </ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello, I&#39;m Zinway Liu, an omnivorous bipedal pseudo full stack engineer. <br/>
+			I&#39;ll share something interesting and awesome with you at this blog~</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/zinway" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/zinw" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		
+		<a href="http://zin.so" target="_blank" title="Zinway">Zinway</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"zin"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>
