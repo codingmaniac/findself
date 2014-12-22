@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Talk about the Soy Sauce]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://zin.so/"/>
-  <updated>2014-12-22T10:43:35.848Z</updated>
+  <updated>2014-12-22T10:45:21.134Z</updated>
   <id>http://zin.so/</id>
   
   <author>
@@ -130,7 +130,7 @@
     <link href="http://zin.so/2014/08/21/how-to-install-openvpn-server-on-centos-7/"/>
     <id>http://zin.so/2014/08/21/how-to-install-openvpn-server-on-centos-7/</id>
     <published>2014-08-21T09:34:35.000Z</published>
-    <updated>2014-10-14T09:21:16.000Z</updated>
+    <updated>2014-12-22T10:45:15.000Z</updated>
     <content type="html"><![CDATA[<h2 id="安装openvpn">安装openvpn</h2>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">yum <span class="operator"><span class="keyword">install</span> -y openssl openssl-devel lzo lzo-devel pam pam-devel</span></div><div class="line">yum <span class="keyword">install</span> openvpn -y</div></pre></td></tr></table></figure>
 
@@ -163,6 +163,10 @@
       <category term="OpenVPN" scheme="http://zin.so/tags/OpenVPN/"/>
     
       <category term="CentOS 7" scheme="http://zin.so/tags/CentOS-7/"/>
+    
+      <category term="VPN" scheme="http://zin.so/tags/VPN/"/>
+    
+      <category term="NAT" scheme="http://zin.so/tags/NAT/"/>
     
       <category term="Tools" scheme="http://zin.so/categories/Tools/"/>
     
