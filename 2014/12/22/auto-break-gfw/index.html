@@ -4,15 +4,16 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>在Mac OSX上通过dd命令制作系统启动盘 | Zinway&#39;s Blog</title>
+    <title>办公室自动翻墙 | Zinway&#39;s Blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="Zinway">
     
-    <meta name="description" content="将iso转换成img文件
-1$ hdiutil convert -format UDRW -o &amp;lt;outfile&amp;gt; &amp;lt;path_to_your_iso_file&amp;gt;
+    <meta name="description" content="引子：凑巧的是我5月中旬给公司搭了个翻墙环境来加速Google和Gmail的访问速度，然后5月27号Google就开始被封了 Orz ，然后就正好用上了这一套系统，后面就是不断地完善和优化，然后最近有空就Blog出来。
+需求:
 
-＊注：该命令会将iso文件转换成dmg文件，而且Mac OSX会默认在“outfile”后面追加一个“.dmg">
+希望能够尽量透明地免设置地实现自动翻墙；
+尽量不影响墙内站点的访问速度">
     
     
     
@@ -76,15 +77,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/08/18/dd-an-os-startup-disk-on-mac-osx/" title="在Mac OSX上通过dd命令制作系统启动盘" itemprop="url">在Mac OSX上通过dd命令制作系统启动盘</a>
+      <a href="/2014/12/22/auto-break-gfw/" title="办公室自动翻墙" itemprop="url">办公室自动翻墙</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://zin.so" title="Zinway">Zinway</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-08-18T09:21:42.000Z" itemprop="datePublished">Aug 18 2014</time>
-    Updated:<time datetime="2014-08-21T09:48:12.000Z" itemprop="dateModified">Aug 21 2014</time>
+    <time datetime="2014-12-22T10:28:44.000Z" itemprop="datePublished">Dec 22 2014</time>
+    Updated:<time datetime="2014-12-22T10:41:18.000Z" itemprop="dateModified">Dec 22 2014</time>
     
   </p>
 </header>
@@ -93,48 +94,50 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#将iso转换成img文件"><span class="toc-number">1.</span> <span class="toc-text">将iso转换成img文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#查看U盘的盘符"><span class="toc-number">2.</span> <span class="toc-text">查看U盘的盘符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#卸载U盘"><span class="toc-number">3.</span> <span class="toc-text">卸载U盘</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#将dmg镜像写入U盘"><span class="toc-number">4.</span> <span class="toc-text">将dmg镜像写入U盘</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#弹出U盘"><span class="toc-number">5.</span> <span class="toc-text">弹出U盘</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#VPN_Server搭建"><span class="toc-number">1.</span> <span class="toc-text">VPN Server搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#路由定制及NAT"><span class="toc-number">2.</span> <span class="toc-text">路由定制及NAT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DNS转发及优化"><span class="toc-number">3.</span> <span class="toc-text">DNS转发及优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#持续维护"><span class="toc-number">4.</span> <span class="toc-text">持续维护</span></a></li></ol>
 		</div>
 		
-		<h2 id="将iso转换成img文件">将iso转换成img文件</h2>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="input"><span class="prompt">$ hdiutil convert -format UDRW -o &lt;outfile&gt;</span> &lt;path_to_your_iso_file&gt;</span></div></pre></td></tr></table></figure>
-
-<p>＊注：该命令会将iso文件转换成dmg文件，而且Mac OSX会默认在“outfile”后面追加一个“.dmg”。</p>
-<h2 id="查看U盘的盘符">查看U盘的盘符</h2>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">$ diskutil list</div><div class="line">/dev/disk0</div><div class="line">   <span class="comment">#:                       TYPE NAME                    SIZE       IDENTIFIER</span></div><div class="line">   0:      GUID_partition_scheme                        <span class="keyword">*</span>251.0 GB   disk0</div><div class="line">   1:                        EFI EFI                     209.7 MB   disk0s1</div><div class="line">   2:          Apple_CoreStorage                         250.1 GB   disk0s2</div><div class="line">   3:                 Apple_Boot Recovery HD             650.0 MB   disk0s3</div><div class="line">/dev/disk1</div><div class="line">   <span class="comment">#:                       TYPE NAME                    SIZE       IDENTIFIER</span></div><div class="line">   0:                  Apple_HFS MHD                    <span class="keyword">*</span>248.4 GB   disk1</div><div class="line">                                 Logical Volume on disk0s2</div><div class="line">                                 04D26A4D-9A6E-448A-9017-8DA1804D4E93</div><div class="line">                                 Unencrypted</div><div class="line">/dev/disk2</div><div class="line">   <span class="comment">#:                       TYPE NAME                    SIZE       IDENTIFIER</span></div><div class="line">   0:      GUID_partition_scheme                        <span class="keyword">*</span>7.9 GB     disk2</div><div class="line">   1:                        EFI EFI                     209.7 MB   disk2s1</div><div class="line">   2:                  Apple_HFS Yosemite                7.6 GB     disk2s2</div></pre></td></tr></table></figure>
-
-<p>＊注：该命令是查看当前系统上挂载的磁盘，其中/dev/disk2是我的U盘。不同的系统disk后面的数字可能不一样，但一般都是diskN的形式。</p>
-<h2 id="卸载U盘">卸载U盘</h2>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ diskutil unmountDisk /dev/disk2</div><div class="line">Unmount <span class="operator">of</span> all volumes <span class="command"><span class="keyword">on</span> <span class="title">disk2</span> <span class="title">was</span> <span class="title">successful</span></span></div></pre></td></tr></table></figure>
-
-<p>＊注：该命令是卸载U盘挂载的卷，使U盘处于空闲状态。</p>
-<h2 id="将dmg镜像写入U盘">将dmg镜像写入U盘</h2>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>sudo dd <span class="keyword">if</span>=&lt;outfile.dmg&gt; of=<span class="regexp">/dev/rdisk</span>2 bs=<span class="number">1</span>m</div></pre></td></tr></table></figure>
-
-<p>＊注1：该命令将第一步生成的dmg文件写入到U盘/dev/rdisk2（注意不是/dev/disk2）;<br>＊注2：该命令需要sudo权限；<br>＊注3：关于bs大小单位，BSD的dd要用小写“m、g”等，GNU的dd要用大写“M、G”等。</p>
-<h2 id="弹出U盘">弹出U盘</h2>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ diskutil eject <span class="regexp">/dev/</span>disk2</div><div class="line">Disk <span class="regexp">/dev/</span>disk2 ejected</div></pre></td></tr></table></figure>
-
+		<p>引子：<br>凑巧的是我5月中旬给公司搭了个翻墙环境来加速Google和Gmail的访问速度，然后5月27号Google就开始被封了 Orz ，然后就正好用上了这一套系统，后面就是不断地完善和优化，然后最近有空就Blog出来。</p>
+<p>需求:</p>
+<ol>
+<li>希望能够尽量透明地免设置地实现自动翻墙；</li>
+<li>尽量不影响墙内站点的访问速度；</li>
+<li>尽可能地便于维护和更新。</li>
+</ol>
+<p>整个自动翻墙分为这么几块：</p>
+<ol>
+<li>VPN（翻墙的跳板，我们这边选择了OpenVPN）；</li>
+<li>路由（定制墙外路由以及NAT，实现“自动”）；</li>
+<li>DNS（防止DNS污染以及CDN的正确解析）。</li>
+</ol>
+<h2 id="VPN_Server搭建">VPN Server搭建</h2>
+<p>OpenVPN的搭建可以参考这一篇文章：<a href="http://zin.so/2014/08/21/how-to-install-openvpn-server-on-centos-7/" target="_blank" rel="external">在CentOS 7上安装OpenVPN Server</a></p>
+<h2 id="路由定制及NAT">路由定制及NAT</h2>
+<p>使用OpenVPN Server将墙外的IP列表push给Client，在办公室网关上启一个OpenVPN Client并且开转发和NAT。<br>为了便于实现路由表的更新，我们使用了 client-config-dir，也就是 ccd 以及 push-continuation，将需要 push 的路由表放入 ccd 之中，配合 management console, 在更新了ccd 之中的路由表之后在 console 里面kill掉相关的client，这样 client 就会自动重连并且得到新的路由表，client 和 server 均无需重启。<br>翻墙路由表可参考<a href="https://github.com/zinw/VPN" target="_blank" rel="external">GFW 境外列表（部分）</a>。</p>
+<h2 id="DNS转发及优化">DNS转发及优化</h2>
+<p>为了方便管理和速度上的保证，我们没有直接使用bind，而是用dnsmasq来转发。<br>使用iptables来过滤DNS污染可以参考这一篇文章：<a href="http://zin.so/2014/12/19/anti-dns-poison-with-iptables/" target="_blank" rel="external">通过iptables去除DNS污染</a><br>dnsmasq默认把DNS丢给OpenDNS，一些CDN域名用dnsmasq.server的配置文件来丢给国内的DNS，一些需要定制IP地址的就用dnsmasq.address配置文件来个性化。</p>
+<h2 id="持续维护">持续维护</h2>
+<p>这一套系统我们需要维护2个表：<br>1个墙外路由表（一些个性化的墙外网站的访问需求）；<br>1个dnsmasq.server表（主要是CDN域名，这个只能发现以后一点一点加）。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/dd/">dd</a><a href="/tags/Mac-OSX/">Mac OSX</a>
+  <span></span> <a href="/tags/VPN/">VPN</a><a href="/tags/NAT/">NAT</a><a href="/tags/DNS/">DNS</a>
   </div>
 
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/Shell/">Shell</a>
+  <a class="article-category-link" href="/categories/Network/">Network</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://zin.so/2014/08/18/dd-an-os-startup-disk-on-mac-osx/" data-title="在Mac OSX上通过dd命令制作系统启动盘 | Zinway&#39;s Blog" data-tsina="null" class="share clearfix">
+  <div data-url="http://zin.so/2014/12/22/auto-break-gfw/" data-title="办公室自动翻墙 | Zinway&#39;s Blog" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -143,19 +146,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2014/08/21/how-to-install-openvpn-server-on-centos-7/" title="在CentOS 7上安装OpenVPN Server">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  在CentOS 7上安装OpenVPN Server</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2014/04/16/diff-mod-rem/"  title="取模运算和求余运算的区别">
+<a href="/2014/12/19/anti-dns-poison-with-iptables/"  title="通过iptables去除DNS污染">
  <strong>NEXT:</strong><br/> 
- <span>取模运算和求余运算的区别
+ <span>通过iptables去除DNS污染
 </span>
 </a>
 </div>
@@ -172,7 +167,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#将iso转换成img文件"><span class="toc-number">1.</span> <span class="toc-text">将iso转换成img文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#查看U盘的盘符"><span class="toc-number">2.</span> <span class="toc-text">查看U盘的盘符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#卸载U盘"><span class="toc-number">3.</span> <span class="toc-text">卸载U盘</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#将dmg镜像写入U盘"><span class="toc-number">4.</span> <span class="toc-text">将dmg镜像写入U盘</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#弹出U盘"><span class="toc-number">5.</span> <span class="toc-text">弹出U盘</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#VPN_Server搭建"><span class="toc-number">1.</span> <span class="toc-text">VPN Server搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#路由定制及NAT"><span class="toc-number">2.</span> <span class="toc-text">路由定制及NAT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DNS转发及优化"><span class="toc-number">3.</span> <span class="toc-text">DNS转发及优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#持续维护"><span class="toc-number">4.</span> <span class="toc-text">持续维护</span></a></li></ol>
   </div>
 
 <div id="asidepart">

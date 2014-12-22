@@ -81,7 +81,7 @@
     </p>
   <p class="article-time">
     <time datetime="2014-12-19T08:26:07.000Z" itemprop="datePublished">Dec 19 2014</time>
-    Updated:<time datetime="2014-12-19T10:35:05.000Z" itemprop="dateModified">Dec 19 2014</time>
+    Updated:<time datetime="2014-12-22T06:09:48.000Z" itemprop="dateModified">Dec 22 2014</time>
     
   </p>
 </header>
@@ -99,7 +99,7 @@
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line">118.5.49.6</div><div class="line">128.121.126.139</div><div class="line">159.106.121.75</div><div class="line">169.132.13.103</div><div class="line">188.5.4.96</div><div class="line">189.163.17.5</div><div class="line">192.67.198.6</div><div class="line">197.4.4.12</div><div class="line">202.106.1.2</div><div class="line">202.181.7.85</div><div class="line">203.161.230.171</div><div class="line">203.98.7.65</div><div class="line">207.12.88.98</div><div class="line">208.56.31.43</div><div class="line">209.145.54.50</div><div class="line">209.220.30.174</div><div class="line">209.36.73.33</div><div class="line">209.85.229.138</div><div class="line">211.94.66.147</div><div class="line">213.169.251.35</div><div class="line">216.221.188.182</div><div class="line">216.234.179.13</div><div class="line">23.89.5.60</div><div class="line">243.185.187.39</div><div class="line">249.129.46.48</div><div class="line">253.157.14.165</div><div class="line">37.61.54.158</div><div class="line">4.36.66.178</div><div class="line">46.82.174.68</div><div class="line">49.2.123.56</div><div class="line">54.76.135.1</div><div class="line">59.24.3.173</div><div class="line">64.33.88.161</div><div class="line">64.33.99.47</div><div class="line">64.66.163.251</div><div class="line">65.104.202.252</div><div class="line">65.160.219.113</div><div class="line">66.45.252.237</div><div class="line">72.14.205.104</div><div class="line">72.14.205.99</div><div class="line">74.125.127.102</div><div class="line">74.125.155.102</div><div class="line">74.125.39.102</div><div class="line">74.125.39.113</div><div class="line">77.4.7.92</div><div class="line">78.16.49.15</div><div class="line">8.7.198.45</div><div class="line">93.46.8.89</div></pre></td></tr></table></figure>
 
 <p>后面需要用到这些IP的16进制，本文推荐个转换工具netmask（附<a href="https://github.com/zinw/VPN/raw/master/netmask_2.3.12.tar.gz" target="_blank" rel="external">netmask源码包</a>）。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># netmask --help</span></div><div class="line">This is netmask, <span class="operator">an</span> address netmask generation utility</div><div class="line">Usage: netmask spec [spec ...]</div><div class="line">  -h, <span class="comment">--helpPrint a summary of the options</span></div><div class="line">  -v, <span class="comment">--versionPrint the version number</span></div><div class="line">  -d, <span class="comment">--debugPrint status/progress information</span></div><div class="line">  -s, <span class="comment">--standardOutput address/netmask pairs</span></div><div class="line">  -c, <span class="comment">--cidrOutput CIDR format address lists</span></div><div class="line">  -i, <span class="comment">--ciscoOutput Cisco style address lists</span></div><div class="line">  -r, <span class="comment">--rangeOutput ip address ranges</span></div><div class="line">  -x, <span class="comment">--hexOutput address/netmask pairs in hex</span></div><div class="line">  -o, <span class="comment">--octalOutput address/netmask pairs in octal</span></div><div class="line">  -b, <span class="comment">--binaryOutput address/netmask pairs in binary</span></div><div class="line">  -n, <span class="comment">--nodnsDisable DNS lookups for addresses</span></div><div class="line">Definitions:</div><div class="line">  <span class="operator">a</span> spec can be <span class="keyword">any</span> <span class="operator">of</span>:</div><div class="line">    address</div><div class="line">    address:address</div><div class="line">    address:+address</div><div class="line">    address/mask</div><div class="line">  <span class="operator">an</span> address can be <span class="keyword">any</span> <span class="operator">of</span>:</div><div class="line">    NULLCMD=decimal <span class="built_in">number</span></div><div class="line">    <span class="number">0</span>Noctal <span class="built_in">number</span></div><div class="line">    <span class="number">0</span>xNhex <span class="built_in">number</span></div><div class="line">    N.N.N.Ndotted quad</div><div class="line">    hostname dns domain name</div><div class="line">  <span class="operator">a</span> mask is <span class="operator">the</span> <span class="built_in">number</span> <span class="operator">of</span> bits <span class="built_in">set</span> <span class="built_in">to</span> <span class="constant">one</span> <span class="built_in">from</span> <span class="operator">the</span> left</div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"> <span class="comment"># netmask --help</span></div><div class="line">This is netmask, <span class="operator">an</span> address netmask generation utility</div><div class="line">Usage: netmask spec [spec ...]</div><div class="line">  -h, <span class="comment">--helpPrint a summary of the options</span></div><div class="line">  -v, <span class="comment">--versionPrint the version number</span></div><div class="line">  -d, <span class="comment">--debugPrint status/progress information</span></div><div class="line">  -s, <span class="comment">--standardOutput address/netmask pairs</span></div><div class="line">  -c, <span class="comment">--cidrOutput CIDR format address lists</span></div><div class="line">  -i, <span class="comment">--ciscoOutput Cisco style address lists</span></div><div class="line">  -r, <span class="comment">--rangeOutput ip address ranges</span></div><div class="line">  -x, <span class="comment">--hexOutput address/netmask pairs in hex</span></div><div class="line">  -o, <span class="comment">--octalOutput address/netmask pairs in octal</span></div><div class="line">  -b, <span class="comment">--binaryOutput address/netmask pairs in binary</span></div><div class="line">  -n, <span class="comment">--nodnsDisable DNS lookups for addresses</span></div><div class="line">Definitions:</div><div class="line">  <span class="operator">a</span> spec can be <span class="keyword">any</span> <span class="operator">of</span>:</div><div class="line">    address</div><div class="line">    address:address</div><div class="line">    address:+address</div><div class="line">    address/mask</div><div class="line">  <span class="operator">an</span> address can be <span class="keyword">any</span> <span class="operator">of</span>:</div><div class="line">    NULLCMD=decimal <span class="built_in">number</span></div><div class="line">    <span class="number">0</span>Noctal <span class="built_in">number</span></div><div class="line">    <span class="number">0</span>xNhex <span class="built_in">number</span></div><div class="line">    N.N.N.Ndotted quad</div><div class="line">    hostname dns domain name</div><div class="line">  <span class="operator">a</span> mask is <span class="operator">the</span> <span class="built_in">number</span> <span class="operator">of</span> bits <span class="built_in">set</span> <span class="built_in">to</span> <span class="constant">one</span> <span class="built_in">from</span> <span class="operator">the</span> left</div></pre></td></tr></table></figure>
 
 <p>用下面的命令进行点分十进制转十六进制处理：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">netmask -x `cat iplist.txt` |cut <span class="operator">-d</span>/ <span class="operator">-f</span>1 |cut -dx <span class="operator">-f</span>2</div></pre></td></tr></table></figure>
@@ -157,6 +157,14 @@
 	
 <nav class="article-nav clearfix">
  
+ <div class="prev" >
+ <a href="/2014/12/22/auto-break-gfw/" title="办公室自动翻墙">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  办公室自动翻墙</span>
+</a>
+</div>
+
 
 <div class="next">
 <a href="/2014/08/25/cursor-control-on-mac-osx/"  title="Mac OSX光标控制">
@@ -196,7 +204,7 @@
 		
 			<li><a href="/categories/LNMP-Stack/" title="LNMP Stack">LNMP Stack<sup>3</sup></a></li>
 		
-			<li><a href="/categories/Network/" title="Network">Network<sup>1</sup></a></li>
+			<li><a href="/categories/Network/" title="Network">Network<sup>2</sup></a></li>
 		
 			<li><a href="/categories/Shell/" title="Shell">Shell<sup>3</sup></a></li>
 		
@@ -213,7 +221,7 @@
 		
 			<li><a href="/tags/CentOS-7/" title="CentOS 7">CentOS 7<sup>1</sup></a></li>
 		
-			<li><a href="/tags/DNS/" title="DNS">DNS<sup>1</sup></a></li>
+			<li><a href="/tags/DNS/" title="DNS">DNS<sup>2</sup></a></li>
 		
 			<li><a href="/tags/HHVM/" title="HHVM">HHVM<sup>1</sup></a></li>
 		
@@ -221,11 +229,15 @@
 		
 			<li><a href="/tags/MySQL/" title="MySQL">MySQL<sup>1</sup></a></li>
 		
+			<li><a href="/tags/NAT/" title="NAT">NAT<sup>1</sup></a></li>
+		
 			<li><a href="/tags/Nagios/" title="Nagios">Nagios<sup>1</sup></a></li>
 		
 			<li><a href="/tags/OpenVPN/" title="OpenVPN">OpenVPN<sup>1</sup></a></li>
 		
 			<li><a href="/tags/Python/" title="Python">Python<sup>1</sup></a></li>
+		
+			<li><a href="/tags/VPN/" title="VPN">VPN<sup>1</sup></a></li>
 		
 			<li><a href="/tags/alias/" title="alias">alias<sup>1</sup></a></li>
 		
@@ -252,7 +264,7 @@
   
   <div class="archiveslist">
     <p class="asidetitle"><a href="/archives">Archives</a></p>
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12">December 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08">August 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04">April 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">March 2014</a><span class="archive-list-count">4</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12">December 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08">August 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04">April 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">March 2014</a><span class="archive-list-count">4</span></li></ul>
   </div>
 
 
