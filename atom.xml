@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Talk about the Soy Sauce]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://zin.so/"/>
-  <updated>2015-04-10T03:03:33.627Z</updated>
+  <updated>2015-05-04T08:41:53.670Z</updated>
   <id>http://zin.so/</id>
   
   <author>
@@ -13,6 +13,29 @@
   </author>
   
   <generator uri="http://zespia.tw/hexo/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[交换CapsLock键和Control键]]></title>
+    <link href="http://zin.so/2015/05/04/swapping-caps-lock-and-control/"/>
+    <id>http://zin.so/2015/05/04/swapping-caps-lock-and-control/</id>
+    <published>2015-05-04T07:33:33.000Z</published>
+    <updated>2015-05-04T08:38:35.000Z</updated>
+    <content type="html"><![CDATA[<p>今天终于<strong>狠下心来</strong>交换CapsLock键和Control键，Google了下发现几年前的OSX就已经支持在键盘设置里面直接修改了。<br>具体修改方法如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="input"><span class="prompt">系统偏好设置 -&gt;</span> 键盘 -&gt; 修饰键 -&gt; 修改<span class="constant">CapsLock</span>键和<span class="constant">Control</span>键对应的映射</span></div></pre></td></tr></table></figure>
+
+<p>附一些Unix系统快捷键，这些命令在Vim／BashShell等涉及到文本操作的情景下都可以使用。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">Ctrl+p  <span class="built_in">shell</span>中上一个命令，或者 文本中移动到上一行</div><div class="line">Ctrl+n  <span class="built_in">shell</span>中下一个命令，或者 文本中移动到下一行</div><div class="line">Ctrl+r  往后搜索历史命令</div><div class="line">Ctrl+s  往前搜索历史命令</div><div class="line">Ctrl+f  光标前移</div><div class="line">Ctrl+b  光标后退</div><div class="line">Ctrl+<span class="operator">a</span>  到行首</div><div class="line">Ctrl+e  到行尾</div><div class="line">Ctrl+d  删除一个字符，删除一个字符，相当于通常的Delete键</div><div class="line">Ctrl+h  退格删除一个字符，相当于通常的Backspace键</div><div class="line">Ctrl+u  删除到行首</div><div class="line">Ctrl+k  删除到行尾</div><div class="line">Ctrl+l  类似 <span class="built_in">clear</span> 命令效果</div><div class="line">Ctrl+y  粘贴</div></pre></td></tr></table></figure>
+
+]]></content>
+    
+    
+      <category term="Mac OSX" scheme="http://zin.so/tags/Mac-OSX/"/>
+    
+      <category term="Vim" scheme="http://zin.so/tags/Vim/"/>
+    
+      <category term="Shell" scheme="http://zin.so/categories/Shell/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[办公室自动翻墙]]></title>
@@ -104,24 +127,6 @@
       <category term="iptables" scheme="http://zin.so/tags/iptables/"/>
     
       <category term="Network" scheme="http://zin.so/categories/Network/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Mac OSX光标控制]]></title>
-    <link href="http://zin.so/2014/08/25/cursor-control-on-mac-osx/"/>
-    <id>http://zin.so/2014/08/25/cursor-control-on-mac-osx/</id>
-    <published>2014-08-25T03:38:07.000Z</published>
-    <updated>2014-08-25T03:47:23.000Z</updated>
-    <content type="html"><![CDATA[<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">Ctrl+p  <span class="built_in">shell</span>中上一个命令，或者 文本中移动到上一行</div><div class="line">Ctrl+n  <span class="built_in">shell</span>中下一个命令，或者 文本中移动到下一行</div><div class="line">Ctrl+r  往后搜索历史命令</div><div class="line">Ctrl+s  往前搜索历史命令</div><div class="line">Ctrl+f  光标前移</div><div class="line">Ctrl+b  光标后退</div><div class="line">Ctrl+<span class="operator">a</span>  到行首</div><div class="line">Ctrl+e  到行尾</div><div class="line">Ctrl+d  删除一个字符，删除一个字符，相当于通常的Delete键</div><div class="line">Ctrl+h  退格删除一个字符，相当于通常的Backspace键</div><div class="line">Ctrl+u  删除到行首</div><div class="line">Ctrl+k  删除到行尾</div><div class="line">Ctrl+l  类似 <span class="built_in">clear</span> 命令效果</div><div class="line">Ctrl+y  粘贴</div></pre></td></tr></table></figure>
-
-<p>你会发现，这些快捷键的定义，跟Emacs里面控制光标有雷同，其实Mac OS里面，所有允许输入文本的地方，都可以用上面的方法来控制光标的方向，不信你去试试吧……</p>
-]]></content>
-    
-    
-      <category term="Mac OSX" scheme="http://zin.so/tags/Mac-OSX/"/>
-    
-      <category term="Shell" scheme="http://zin.so/categories/Shell/"/>
     
   </entry>
   

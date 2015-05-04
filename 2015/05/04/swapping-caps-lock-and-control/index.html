@@ -4,12 +4,15 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Mac OSX光标控制 | Zinway&#39;s Blog</title>
+    <title>交换CapsLock键和Control键 | Zinway&#39;s Blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="Zinway">
     
-    <meta name="description" content="1234567891011121314Ctrl+p  shell中上一个命令，或者 文本中移动到上一行Ctrl+n  shell中下一个命令，或者 文本中移动到下一行Ctrl+r  往后搜索历史命令Ctrl+s  往前搜索历史命令Ctrl+f  光标前移Ctrl+b  光标后退Ctrl+a  到行首">
+    <meta name="description" content="今天终于狠下心来交换CapsLock键和Control键，Google了下发现几年前的OSX就已经支持在键盘设置里面直接修改了。具体修改方法如下：
+1系统偏好设置 -&amp;gt; 键盘 -&amp;gt; 修饰键 -&amp;gt; 修改CapsLock键和Control键对应的映射
+
+附一些Unix系统快捷键，这些命">
     
     
     
@@ -73,15 +76,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/08/25/cursor-control-on-mac-osx/" title="Mac OSX光标控制" itemprop="url">Mac OSX光标控制</a>
+      <a href="/2015/05/04/swapping-caps-lock-and-control/" title="交换CapsLock键和Control键" itemprop="url">交换CapsLock键和Control键</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://zin.so" title="Zinway">Zinway</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-08-25T03:38:07.000Z" itemprop="datePublished">Aug 25 2014</time>
-    Updated:<time datetime="2014-08-25T03:47:23.000Z" itemprop="dateModified">Aug 25 2014</time>
+    <time datetime="2015-05-04T07:33:33.000Z" itemprop="datePublished">May 4 2015</time>
+    Updated:<time datetime="2015-05-04T08:38:35.000Z" itemprop="dateModified">May 4 2015</time>
     
   </p>
 </header>
@@ -93,16 +96,19 @@
 		
 		</div>
 		
-		<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">Ctrl+p  <span class="built_in">shell</span>中上一个命令，或者 文本中移动到上一行</div><div class="line">Ctrl+n  <span class="built_in">shell</span>中下一个命令，或者 文本中移动到下一行</div><div class="line">Ctrl+r  往后搜索历史命令</div><div class="line">Ctrl+s  往前搜索历史命令</div><div class="line">Ctrl+f  光标前移</div><div class="line">Ctrl+b  光标后退</div><div class="line">Ctrl+<span class="operator">a</span>  到行首</div><div class="line">Ctrl+e  到行尾</div><div class="line">Ctrl+d  删除一个字符，删除一个字符，相当于通常的Delete键</div><div class="line">Ctrl+h  退格删除一个字符，相当于通常的Backspace键</div><div class="line">Ctrl+u  删除到行首</div><div class="line">Ctrl+k  删除到行尾</div><div class="line">Ctrl+l  类似 <span class="built_in">clear</span> 命令效果</div><div class="line">Ctrl+y  粘贴</div></pre></td></tr></table></figure>
+		<p>今天终于<strong>狠下心来</strong>交换CapsLock键和Control键，Google了下发现几年前的OSX就已经支持在键盘设置里面直接修改了。<br>具体修改方法如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="input"><span class="prompt">系统偏好设置 -&gt;</span> 键盘 -&gt; 修饰键 -&gt; 修改<span class="constant">CapsLock</span>键和<span class="constant">Control</span>键对应的映射</span></div></pre></td></tr></table></figure>
 
-<p>你会发现，这些快捷键的定义，跟Emacs里面控制光标有雷同，其实Mac OS里面，所有允许输入文本的地方，都可以用上面的方法来控制光标的方向，不信你去试试吧……</p>
+<p>附一些Unix系统快捷键，这些命令在Vim／BashShell等涉及到文本操作的情景下都可以使用。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">Ctrl+p  <span class="built_in">shell</span>中上一个命令，或者 文本中移动到上一行</div><div class="line">Ctrl+n  <span class="built_in">shell</span>中下一个命令，或者 文本中移动到下一行</div><div class="line">Ctrl+r  往后搜索历史命令</div><div class="line">Ctrl+s  往前搜索历史命令</div><div class="line">Ctrl+f  光标前移</div><div class="line">Ctrl+b  光标后退</div><div class="line">Ctrl+<span class="operator">a</span>  到行首</div><div class="line">Ctrl+e  到行尾</div><div class="line">Ctrl+d  删除一个字符，删除一个字符，相当于通常的Delete键</div><div class="line">Ctrl+h  退格删除一个字符，相当于通常的Backspace键</div><div class="line">Ctrl+u  删除到行首</div><div class="line">Ctrl+k  删除到行尾</div><div class="line">Ctrl+l  类似 <span class="built_in">clear</span> 命令效果</div><div class="line">Ctrl+y  粘贴</div></pre></td></tr></table></figure>
+
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Mac-OSX/">Mac OSX</a>
+  <span></span> <a href="/tags/Mac-OSX/">Mac OSX</a><a href="/tags/Vim/">Vim</a>
   </div>
 
 
@@ -115,7 +121,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://zin.so/2014/08/25/cursor-control-on-mac-osx/" data-title="Mac OSX光标控制 | Zinway&#39;s Blog" data-tsina="null" class="share clearfix">
+  <div data-url="http://zin.so/2015/05/04/swapping-caps-lock-and-control/" data-title="交换CapsLock键和Control键 | Zinway&#39;s Blog" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -124,19 +130,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2014/12/19/anti-dns-poison-with-iptables/" title="通过iptables去除DNS污染">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  通过iptables去除DNS污染</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2014/08/21/how-to-install-openvpn-server-on-centos-7/"  title="在CentOS 7上安装OpenVPN Server">
+<a href="/2014/12/22/auto-break-gfw/"  title="办公室自动翻墙">
  <strong>NEXT:</strong><br/> 
- <span>在CentOS 7上安装OpenVPN Server
+ <span>办公室自动翻墙
 </span>
 </a>
 </div>
@@ -206,6 +204,8 @@
 		
 			<li><a href="/tags/VPN/" title="VPN">VPN<sup>2</sup></a></li>
 		
+			<li><a href="/tags/Vim/" title="Vim">Vim<sup>1</sup></a></li>
+		
 			<li><a href="/tags/alias/" title="alias">alias<sup>1</sup></a></li>
 		
 			<li><a href="/tags/c/" title="c">c<sup>1</sup></a></li>
@@ -231,7 +231,7 @@
   
   <div class="archiveslist">
     <p class="asidetitle"><a href="/archives">Archives</a></p>
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12">December 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08">August 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04">April 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">March 2014</a><span class="archive-list-count">4</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12">December 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08">August 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04">April 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">March 2014</a><span class="archive-list-count">4</span></li></ul>
   </div>
 
 
